@@ -12,32 +12,40 @@ else
   let g:loaded_gtfo = 1
 endif
 
+" Turn on support for line continuations when creating the script
+let s:cpo_save = &cpo
+set cpo&vim
+
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_unix = has('unix')
 let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_tmux = !(empty($TMUX))
-let s:is_gui = has('gui_running') || &term ==? 'builtin_gui'
 "TODO
 let s:is_linux_gui = 0
-"vim may be running in terminal mode, but there may still be a gui available to show the file manager
+"even if vim is in a terminal, there may still be a gui file manager available
 let s:is_gui_available = s:is_mac || s:is_windows || s:is_linux_gui
 
-func! s:mac_open_terminal()
-  let l:cmd = "
-        \ set cmd to 'cd \"" . "%:p:h" . "\"'     \n
-        \ tell application 'Terminal'                 \n
-        \   do script with command cmd                \n
-        \   activate                                  \n
-        \ end tell                                    \n
-        \ "
-  let l:cmd = substitute(l:cmd,  "'", '\\"', 'g') 
-  call system('osascript -e " ' . l:cmd . '"')
+func! s:is_gui()
+  return has('gui_running') || &term ==? 'builtin_gui'
 endf
 
-func! s:buffer_dir()
-  "escape spaces in path
-  return substitute(expand("%:p:h")," ","\\\\ ","g")
+func! s:mac_open_terminal()
+  "This is somewhat complicated because we must pass a correctly-escaped,
+  "newline-delimitd applescript literal from vim => shell => osascript.
+
+  "Applescript does not allow apostrophes; we use them only for readability.
+  let l:cmd = "
+        \ tell application 'Terminal'     \n
+        \   do script with command '___'  \n
+        \   activate                      \n
+        \ end tell                        \n
+        \ "
+  "replace ' with \"'
+  let l:cmd = substitute(l:cmd,  "'", '\\"', 'g') 
+  "replace ___ with the shell command to be passed from applescript to Terminal.app.
+  let l:cmd = substitute(l:cmd, '___', "cd '".expand("%:p:h")."'", 'g')
+  call system('osascript -e " ' . l:cmd . '"')
 endf
 
 " navigate to the directory of the current file
@@ -48,7 +56,7 @@ if maparg('gof', 'n') ==# ''
   elseif s:is_windows
     nnoremap <silent> gof :silent !start explorer /select,%:p<cr>
   elseif s:is_mac
-    nnoremap <silent> gof :silent execute '!open ' . <sid>buffer_dir()<cr>
+    nnoremap <silent> gof :silent execute "!open '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
   endif
 endif
 
@@ -65,7 +73,7 @@ endif
 
 if maparg('got', 'n') ==# ''
   if s:is_tmux
-    nnoremap <silent> got :silent execute '!tmux split-window -h \; ' .  'send-keys "cd "' . <sid>buffer_dir() . ' C-m'<cr>
+    nnoremap <silent> got :silent execute '!tmux split-window -h \; send-keys "cd ''' . expand("%:p:h") . '''" C-m'<cr>
   elseif s:is_windows
     " HACK: Execute bash (again) immediately after -c to prevent exit.
     "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
@@ -76,3 +84,5 @@ if maparg('got', 'n') ==# ''
   endif
 endif
 
+let &cpo = s:cpo_save
+unlet s:cpo_save

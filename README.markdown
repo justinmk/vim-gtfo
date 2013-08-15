@@ -1,7 +1,11 @@
 # gtfo.vim
 
-Open the directory of the *current buffer* in the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
-or a [terminal](http://en.wikipedia.org/wiki/Terminal_emulator)
+Opens the directory of the *current buffer* in the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
+or a [terminal](http://en.wikipedia.org/wiki/Terminal_emulator).
+
+* *Just works&tm;* on Windows, OS X, and tmux
+* Works in vim and gvim
+* Sane defaults (**no configuration**)
 
 This plugin doesn't care what your `&shell` is. Sometimes (especially on Windows), 
 you may want to leave `&shell` as the default (for `!` and `system()` commands), 
@@ -26,7 +30,7 @@ Same installation as most Vim plugins, or use a package manager:
 ## Credits
 
 * Sangmin Ryu, [open-terminal-filemanager](http://www.vim.org/scripts/script.php?script_id=2896)
-* tpope
+* @tpope, for impeccable Vim plugin reference implementations
 
 <!--
 ## FAQ
