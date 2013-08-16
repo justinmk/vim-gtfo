@@ -28,7 +28,7 @@ about Vim's current directory or buffer.
     * *Linux:* defers to [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html)
     * falls back to `got` if you're not in a GUI (eg, ssh)
 * `got`: **Go** to the current buffer's directory in the **T**erminal
-    * *Windows:* opens cygwin (tries to find Git bash (msysgit), otherwise falls back to "vanilla" cygwin)
+    * *Windows:* opens msysgit bash (or else falls back to "vanilla" Cygwin)
     * *Mac OS X:* opens Terminal
     * *Linux:* opens `gnome-terminal`
         * Send an issue or pull request if you want support for a different terminal
