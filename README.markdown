@@ -2,7 +2,8 @@
 
 Opens the directory of the *current buffer* in the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
 or a [terminal](http://en.wikipedia.org/wiki/Terminal_emulator). Also provides 
-a variant for opening the *current directory* (see `:help :cd`).
+a variant for opening the *current directory* (see `:help :cd` to understand the 
+difference).
 
 This simple feature is missing or half-baked in many IDEs and editors:
 * missing in Eclipse [since 2005](https://bugs.eclipse.org/bugs/show_bug.cgi?id=107436)
@@ -33,6 +34,9 @@ about Vim's current directory or buffer.
         * Send an issue or pull request if you want support for a different terminal
     * *tmux:* opens a new pane
 * `goo`: (todo) **Go** to the current buffer's directory in some **O**ther terminal
+* `goF`: (todo) like `gof`, but opens the *current directory* instead of the *buffer directory*
+* `goT`: (todo) like `got`, but opens the *current directory*
+* `goO`: (todo) like `goo`, but opens the *current directory*
 
 ## Installation
 
@@ -48,9 +52,12 @@ Same installation as most Vim plugins, or use a package manager:
 * Sangmin Ryu, [open-terminal-filemanager](http://www.vim.org/scripts/script.php?script_id=2896)
 * @tpope, for impeccable Vim plugin reference implementations
 
-## Todo
+## TODO
 
 * Powershell
+* goT, goF, goO
+* linux GUI detection probably sends a false positive when ssh-ing from a GUI
+* provide vim commands (GtfoTerminal, GtfoFileman, GtfoOther)
 * if [vimux](https://github.com/benmills/vimux) is available, use that instead
 * iTerm?
 

@@ -19,12 +19,10 @@ set cpo&vim
 let s:is_windows = has('win32') || has('win64')
 let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_unix = has('unix')
-let s:is_msysgit = (has('win32') || has('win64')) && $TERM ==? 'cygwin'
 let s:is_tmux = !(empty($TMUX))
-"TODO
-let s:is_linux_gui = 0
+let s:is_unix_gui = !empty($DISPLAY) && $TERM !=# 'linux'
 "even if vim is in a terminal, there may still be a gui file manager available
-let s:is_gui_available = s:is_mac || s:is_windows || s:is_linux_gui
+let s:is_gui_available = s:is_mac || s:is_windows || s:is_unix_gui
 
 func! s:is_gui()
   return has('gui_running') || &term ==? 'builtin_gui'
@@ -50,13 +48,19 @@ endf
 
 " navigate to the directory of the current file
 if maparg('gof', 'n') ==# ''
-  if !(s:is_gui_available)
-    "fallback
-    nnoremap <silent> gof :normal got<cr>
+  if !s:is_unix && !s:is_gui_available
+    "fallback for non-GUI, except unix (xdg-open supports non-GUI)
+    if s:is_tmux
+      nnoremap <silent> gof :normal got<cr>
+    else "what environment are you using?
+      nnoremap <silent> gof :shell<cr>
+    endif
   elseif s:is_windows
     nnoremap <silent> gof :silent !start explorer /select,%:p<cr>
   elseif s:is_mac
     nnoremap <silent> gof :silent execute "!open '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
+  elseif executable('xdg-open')
+    nnoremap <silent> gof :silent execute "!xdg-open '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
   endif
 endif
 
@@ -81,6 +85,10 @@ if maparg('got', 'n') ==# ''
     nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""' . g:gtfo_cygwin_bash . '" "--login" "-i" "-c" "cd '''.expand("%:p:h").''' ; bash" "'<cr>
   elseif s:is_mac
     nnoremap <silent> got :silent call <sid>mac_open_terminal()<cr>
+  elseif s:is_gui_available && executable('gnome-terminal')
+    nnoremap <silent> got :silent execute '! gnome-terminal --window-with-profile gtfo -e "bash -c \"cd '''.expand("%:p:h").''' ; bash\"'<cr>
+  else
+    nnoremap <silent> gof :shell<cr>
   endif
 endif
 
