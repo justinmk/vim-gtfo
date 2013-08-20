@@ -48,9 +48,8 @@ endf
 
 " navigate to the directory of the current file
 if maparg('gof', 'n') ==# ''
-  if !s:is_unix && !s:is_gui_available
-    "fallback for non-GUI, except unix (xdg-open supports non-GUI)
-    if s:is_tmux
+  if !s:is_gui_available && !executable('xdg-open')
+    if s:is_tmux "fallback to 'got'
       nnoremap <silent> gof :normal got<cr>
     else "what environment are you using?
       nnoremap <silent> gof :shell<cr>
@@ -61,6 +60,9 @@ if maparg('gof', 'n') ==# ''
     nnoremap <silent> gof :silent execute "!open '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
   elseif executable('xdg-open')
     nnoremap <silent> gof :silent execute "!xdg-open '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
+  else
+    "instead of complaining every time vim starts up, wait for the user to call 'gof'.
+    nnoremap <silent> gof :echoerr 'gtfo.vim: xdg-open is not in your $PATH. Try "sudo apt-get install xdg-utils".'<cr>
   endif
 endif
 
