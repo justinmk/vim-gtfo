@@ -86,7 +86,7 @@ if maparg('got', 'n') ==# ''
   elseif s:is_mac
     nnoremap <silent> got :silent call <sid>mac_open_terminal()<cr>
   elseif s:is_gui_available && executable('gnome-terminal')
-    nnoremap <silent> got :silent execute '! gnome-terminal --window-with-profile gtfo -e "bash -c \"cd '''.expand("%:p:h").''' ; bash\""'<cr>
+    nnoremap <silent> got :silent execute 'silent ! gnome-terminal --window -e "bash -c \"cd '''.expand("%:p:h").''' ; bash\"" &'<cr>
   else
     nnoremap <silent> got :shell<cr>
   endif
