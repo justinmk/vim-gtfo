@@ -33,7 +33,8 @@ about Vim's current directory or buffer.
     * *Linux:* opens `gnome-terminal`
         * Send an issue or pull request if you want support for a different terminal
     * *tmux:* opens a new pane
-* `goo`: (todo) **Go** to the current buffer's directory in some **O**ther terminal
+* `goo`: **Go** to the current buffer's directory in some **O**ther terminal
+    * *Mac OS X:* opens iTerm
 * `goF`: (todo) like `gof`, but opens the *current directory* instead of the *buffer directory*
 * `goT`: (todo) like `got`, but opens the *current directory*
 * `goO`: (todo) like `goo`, but opens the *current directory*

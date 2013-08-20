@@ -34,13 +34,34 @@ func! s:mac_open_terminal()
 
   "Applescript does not allow apostrophes; we use them only for readability.
   let l:cmd = "
-        \ tell application 'Terminal'     \n
-        \   do script with command '___'  \n
-        \   activate                      \n
-        \ end tell                        \n
+        \ tell application 'Terminal'  \n
+        \ do script with command '___' \n
+        \ activate                     \n
+        \ end tell                     \n
         \ "
   "replace ' with \"'
-  let l:cmd = substitute(l:cmd,  "'", '\\"', 'g') 
+  let l:cmd = substitute(l:cmd,  "'", '\\"', 'g')
+  "replace ___ with the shell command to be passed from applescript to Terminal.app.
+  let l:cmd = substitute(l:cmd, '___', "cd '".expand("%:p:h")."'", 'g')
+  call system('osascript -e " ' . l:cmd . '"')
+endf
+
+func! s:mac_open_other_terminal()
+  let l:cmd = "
+        \ tell application 'iTerm'                             \n
+        \ 	activate                                           \n
+        \ 	set term to (make new terminal)                    \n
+        \ 	tell term                                          \n
+        \ 		set sess to (launch session 'Default Session')   \n
+        \ 		tell sess                                        \n
+        \ 			write text '___'                               \n
+        \ 		end tell                                         \n
+        \ 	end tell                                           \n
+        \ end tell                                             \n
+        \ "
+
+  "replace ' with \"'
+  let l:cmd = substitute(l:cmd,  "'", '\\"', 'g')
   "replace ___ with the shell command to be passed from applescript to Terminal.app.
   let l:cmd = substitute(l:cmd, '___', "cd '".expand("%:p:h")."'", 'g')
   call system('osascript -e " ' . l:cmd . '"')
@@ -74,6 +95,13 @@ if !executable(g:gtfo_cygwin_bash)
     let g:gtfo_cygwin_bash = $SystemDrive.'/cygwin/bin/bash'
   endif
 endif
+
+if maparg('goo', 'n') ==# ''
+  if s:is_mac
+    nnoremap <silent> goo :silent call <sid>mac_open_other_terminal()<cr>
+  endif
+endif
+
 
 if maparg('got', 'n') ==# ''
   if s:is_tmux
