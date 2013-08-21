@@ -65,12 +65,15 @@ if maparg('gof', 'n') ==# ''
   endif
 endif
 
-if !exists('g:gtfo_cygwin_bash')
+if s:is_windows && !exists('g:gtfo_cygwin_bash')
   "try 'Program Files', else fall back to 'Program Files (x86)'.
   let g:gtfo_cygwin_bash = (exists('$ProgramW6432') ? $ProgramW6432 : $ProgramFiles) . '/Git/bin/bash.exe'
   if !executable(g:gtfo_cygwin_bash)
-    "cannot find msysgit cygwin; look for vanilla cygwin
-    let g:gtfo_cygwin_bash = $SystemDrive.'/cygwin/bin/bash'
+    let g:gtfo_cygwin_bash = $ProgramFiles.'/Git/bin/bash.exe'
+    if !executable(g:gtfo_cygwin_bash)
+      "cannot find msysgit cygwin; look for vanilla cygwin
+      let g:gtfo_cygwin_bash = $SystemDrive.'/cygwin/bin/bash'
+    endif
   endif
 endif
 
@@ -84,7 +87,7 @@ if maparg('got', 'n') ==# ''
       " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
       nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""' . g:gtfo_cygwin_bash . '" "--login" "-i" "-c" "cd '''.expand("%:p:h").''' ; bash" "'<cr>
     else "fall back to cmd.exe
-      nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c "cd ".expand("%:p:h").""'<cr>
+      nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /k "cd "'.expand("%:p:h").'""'<cr>
     endif
   elseif s:is_mac
     nnoremap <silent> got :silent call <sid>mac_open_terminal()<cr>
