@@ -46,7 +46,6 @@ func! s:mac_open_terminal()
   call system('osascript -e " ' . l:cmd . '"')
 endf
 
-" navigate to the directory of the current file
 if maparg('gof', 'n') ==# ''
   if !s:is_gui_available && !executable('xdg-open')
     if s:is_tmux "fallback to 'got'
@@ -66,13 +65,11 @@ if maparg('gof', 'n') ==# ''
   endif
 endif
 
-"try 64-bit 'Program Files' first
-let g:gtfo_cygwin_bash = (exists('$ProgramW6432') ? $ProgramW6432 : $ProgramFiles) . '/Git/bin/bash.exe'
-if !executable(g:gtfo_cygwin_bash)
-  "fall back to 32-bit 'Program Files'
-  let g:gtfo_cygwin_bash = $ProgramFiles.'/Git/bin/bash.exe'
-  "cannot find msysgit cygwin; look for vanilla cygwin
+if !exists('g:gtfo_cygwin_bash')
+  "try 'Program Files', else fall back to 'Program Files (x86)'.
+  let g:gtfo_cygwin_bash = (exists('$ProgramW6432') ? $ProgramW6432 : $ProgramFiles) . '/Git/bin/bash.exe'
   if !executable(g:gtfo_cygwin_bash)
+    "cannot find msysgit cygwin; look for vanilla cygwin
     let g:gtfo_cygwin_bash = $SystemDrive.'/cygwin/bin/bash'
   endif
 endif
@@ -81,10 +78,14 @@ if maparg('got', 'n') ==# ''
   if s:is_tmux
     nnoremap <silent> got :silent execute '!tmux split-window -h \; send-keys "cd ''' . expand("%:p:h") . '''" C-m'<cr>
   elseif s:is_windows
-    " HACK: Execute bash (again) immediately after -c to prevent exit.
-    "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
-    " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
-    nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""' . g:gtfo_cygwin_bash . '" "--login" "-i" "-c" "cd '''.expand("%:p:h").''' ; bash" "'<cr>
+    if executable(g:gtfo_cygwin_bash)
+      " HACK: Execute bash (again) immediately after -c to prevent exit.
+      "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
+      " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
+      nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""' . g:gtfo_cygwin_bash . '" "--login" "-i" "-c" "cd '''.expand("%:p:h").''' ; bash" "'<cr>
+    else "fall back to cmd.exe
+      nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c "cd ".expand("%:p:h").""'<cr>
+    endif
   elseif s:is_mac
     nnoremap <silent> got :silent call <sid>mac_open_terminal()<cr>
   elseif s:is_gui_available && executable('gnome-terminal')
