@@ -1,21 +1,17 @@
 # gtfo.vim
 
 Opens the directory of the *current buffer* in the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
-or a [terminal](http://en.wikipedia.org/wiki/Terminal_emulator). Also provides 
-a variant for opening the *current directory* (see `:help :cd` to understand the 
-difference).
+or the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator). **No configuration.**
+Just works™ on [tmux](http://tmux.sourceforge.net/), Windows, OS X, Linux. 
+Supports vim and gvim, GUI or no GUI (tty console, ssh). 
+
+Does not override existing bindings (try `:verbose map gof | map got`)
 
 This simple feature is missing or cumbersome in many IDEs and editors:
 * [missing in Eclipse](https://bugs.eclipse.org/bugs/show_bug.cgi?id=107436)
 * clunky in Visual Studio
 * Intellij requires a plugin (oh the irony!)
 * Vim `ctrl-z` and `:shell` do not open to the buffer's directory
-
-We can make it painless in Vim
-* Sane defaults, **no configuration**
-* *Just works™* on Windows, OS X, Linux, and [tmux](http://tmux.sourceforge.net/)
-* Supports vim and gvim, GUI or no GUI
-* Does not override existing bindings (try `:verbose map gof | map got`)
 
 ## Features
 
@@ -25,14 +21,12 @@ We can make it painless in Vim
     * *Mac OS X:* opens Finder
     * *Linux:* defers to [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html)
         * `xdg-open` also works without a GUI (ssh or tty console)
-    * falls back to `got` if you're not in a GUI (eg, ssh)
 * `got`: **Go** to the current buffer's directory in the **T**erminal
     * *Windows:* opens "Git bash" ([msysgit](http://msysgit.github.io/))
         * else, falls back to ["vanilla" Cygwin](http://www.cygwin.org)
         * else, falls back to `%COMSPEC%` (cmd.exe)
     * *Mac OS X:* opens Terminal
     * *Linux:* opens `gnome-terminal`
-        * Send an issue or pull request if you want support for a different terminal
     * *tmux:* opens a new pane
 * `goo`: (todo) **Go** to the current buffer's directory in some **O**ther terminal
 * `goF`: (todo) like `gof`, but opens the *current directory* instead of the *buffer directory*
