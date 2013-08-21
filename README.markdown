@@ -5,30 +5,31 @@ or a [terminal](http://en.wikipedia.org/wiki/Terminal_emulator). Also provides
 a variant for opening the *current directory* (see `:help :cd` to understand the 
 difference).
 
-This simple feature is missing or half-baked in many IDEs and editors:
-* missing in Eclipse [since 2005](https://bugs.eclipse.org/bugs/show_bug.cgi?id=107436)
+This simple feature is missing or cumbersome in many IDEs and editors:
+* [missing in Eclipse](https://bugs.eclipse.org/bugs/show_bug.cgi?id=107436)
 * clunky in Visual Studio
 * Intellij requires a plugin (oh the irony!)
+* Vim `ctrl-z` and `:shell` do not open to the buffer's directory
 
-We can make it painless in Vim, I hope.
+We can make it painless in Vim
+* Sane defaults, **no configuration**
 * *Just works™* on Windows, OS X, Linux, and [tmux](http://tmux.sourceforge.net/)
 * Supports vim and gvim, GUI or no GUI
-* Sane defaults: **no configuration**
 * Does not override existing bindings (try `:verbose map gof | map got`)
-
-This plugin doesn't care what your `&shell` is. And `ctrl-z` doesn't care 
-about Vim's current directory or buffer.
 
 ## Features
 
-**Normal-mode key bindings:**
+**Normal-mode key bindings: got, gof, goo**
 * `gof`: **Go** to the current buffer's directory in the **F**ile manager 
     * *Windows:* opens Windows Explorer
     * *Mac OS X:* opens Finder
     * *Linux:* defers to [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html)
+        * `xdg-open` also works without a GUI (ssh or tty console)
     * falls back to `got` if you're not in a GUI (eg, ssh)
 * `got`: **Go** to the current buffer's directory in the **T**erminal
-    * *Windows:* opens msysgit bash (or else falls back to "vanilla" Cygwin)
+    * *Windows:* opens "Git bash" ([msysgit](http://msysgit.github.io/))
+        * else, falls back to ["vanilla" Cygwin](http://www.cygwin.org)
+        * else, falls back to `%COMSPEC%` (cmd.exe)
     * *Mac OS X:* opens Terminal
     * *Linux:* opens `gnome-terminal`
         * Send an issue or pull request if you want support for a different terminal
@@ -37,6 +38,10 @@ about Vim's current directory or buffer.
 * `goF`: (todo) like `gof`, but opens the *current directory* instead of the *buffer directory*
 * `goT`: (todo) like `got`, but opens the *current directory*
 * `goO`: (todo) like `goo`, but opens the *current directory*
+
+**Settings**
+
+* `g:gtfo_cygwin_bash` : absolute path to cygwin bash executable (example: "C:\cygwin\bin\bash")
 
 ## Installation
 
@@ -52,14 +57,15 @@ Same installation as most Vim plugins, or use a package manager:
 * Sangmin Ryu, [open-terminal-filemanager](http://www.vim.org/scripts/script.php?script_id=2896)
 * @tpope, for impeccable Vim plugin reference implementations
 
-## TODO
+## Todo
 
 * Powershell
+* try to find mintty and use it instead of cmd.exe
+* support shells other than bash (zsh, fish) if `&shell` and friends are configured correctly 
 * goT, goF, goO
-* linux GUI detection probably sends a false positive when ssh-ing from a GUI
 * provide vim commands (GtfoTerminal, GtfoFileman, GtfoOther)
-* if [vimux](https://github.com/benmills/vimux) is available, use that instead
-* iTerm?
+* if [vimux](https://github.com/benmills/vimux) is available, defer to it for tmux behavior
+* conemu?
 
 ## License
 
