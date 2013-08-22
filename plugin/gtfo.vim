@@ -28,43 +28,42 @@ func! s:is_gui()
   return has('gui_running') || &term ==? 'builtin_gui'
 endf
 
-func! s:mac_open_terminal()
+func! s:mac_do_ascript_voodoo(cmd)
   "This is somewhat complicated because we must pass a correctly-escaped,
   "newline-delimitd applescript literal from vim => shell => osascript.
 
   "Applescript does not allow apostrophes; we use them only for readability.
-  let l:cmd = "
-        \ tell application 'Terminal'  \n
-        \ do script with command '___' \n
-        \ activate                     \n
-        \ end tell                     \n
-        \ "
   "replace ' with \"'
-  let l:cmd = substitute(l:cmd,  "'", '\\"', 'g')
+  let l:cmd = substitute(a:cmd,  "'", '\\"', 'g')
   "replace ___ with the shell command to be passed from applescript to Terminal.app.
   let l:cmd = substitute(l:cmd, '___', "cd '".expand("%:p:h")."'", 'g')
   call system('osascript -e " ' . l:cmd . '"')
 endf
 
+func! s:mac_open_terminal()
+  let l:cmd = "
+        \ tell application 'Terminal'     \n
+        \   do script with command '___'  \n
+        \   activate                      \n
+        \ end tell                        \n
+        \ "
+  call <sid>mac_do_ascript_voodoo(l:cmd)
+endf
+
 func! s:mac_open_other_terminal()
   let l:cmd = "
         \ tell application 'iTerm'                             \n
-        \ 	activate                                           \n
-        \ 	set term to (make new terminal)                    \n
-        \ 	tell term                                          \n
-        \ 		set sess to (launch session 'Default Session')   \n
-        \ 		tell sess                                        \n
-        \ 			write text '___'                               \n
-        \ 		end tell                                         \n
-        \ 	end tell                                           \n
+        \   set term to (make new terminal)                    \n
+        \   tell term                                          \n
+        \     set sess to (launch session 'Default Session')   \n
+        \     tell sess                                        \n
+        \       write text '___'                               \n
+        \     end tell                                         \n
+        \   end tell                                           \n
+        \   activate                                           \n
         \ end tell                                             \n
         \ "
-
-  "replace ' with \"'
-  let l:cmd = substitute(l:cmd,  "'", '\\"', 'g')
-  "replace ___ with the shell command to be passed from applescript to Terminal.app.
-  let l:cmd = substitute(l:cmd, '___', "cd '".expand("%:p:h")."'", 'g')
-  call system('osascript -e " ' . l:cmd . '"')
+  call <sid>mac_do_ascript_voodoo(l:cmd)
 endf
 
 if maparg('gof', 'n') ==# ''
@@ -98,13 +97,6 @@ if s:is_windows && !exists('g:gtfo_cygwin_bash')
   endif
 endif
 
-if maparg('goo', 'n') ==# ''
-  if s:is_mac
-    nnoremap <silent> goo :silent call <sid>mac_open_other_terminal()<cr>
-  endif
-endif
-
-
 if maparg('got', 'n') ==# ''
   if s:is_tmux
     nnoremap <silent> got :silent execute '!tmux split-window -h \; send-keys "cd ''' . expand("%:p:h") . '''" C-m'<cr>
@@ -123,6 +115,12 @@ if maparg('got', 'n') ==# ''
     nnoremap <silent> got :silent execute 'silent ! gnome-terminal --window -e "bash -c \"cd '''.expand("%:p:h").''' ; bash\"" &'<cr>
   else
     nnoremap <silent> got :shell<cr>
+  endif
+endif
+
+if maparg('goo', 'n') ==# ''
+  if s:is_mac
+    nnoremap <silent> goo :silent call <sid>mac_open_other_terminal()<cr>
   endif
 endif
 
