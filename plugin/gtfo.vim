@@ -119,7 +119,9 @@ if maparg('got', 'n') ==# ''
 endif
 
 if maparg('goo', 'n') ==# ''
-  if s:is_mac
+  if s:is_windows
+    nnoremap <silent> goo :silent exe '!start powershell -NoLogo -NoExit -Command "cd '''.expand("%:p:h").'''"'<cr>
+  elseif s:is_mac
     nnoremap <silent> goo :silent call <sid>mac_open_other_terminal()<cr>
   endif
 endif

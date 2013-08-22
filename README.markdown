@@ -29,10 +29,12 @@ This simple feature is missing or cumbersome in many IDEs and editors:
     * *Linux:* opens `gnome-terminal`
     * *tmux:* opens a new pane
 * `goo`: **Go** to the current buffer's directory in some **O**ther terminal
+    * *Windows:* opens Powershell
     * *Mac OS X:* opens iTerm
-* `goF`: (todo) like `gof`, but opens the *current directory* instead of the *buffer directory*
-* `goT`: (todo) like `got`, but opens the *current directory*
-* `goO`: (todo) like `goo`, but opens the *current directory*
+    * *Linux:* [todo]
+* `goF`: [todo] like `gof`, but opens the *current directory* instead of the *buffer directory*
+* `goT`: [todo] like `got`, but opens the *current directory*
+* `goO`: [todo] like `goo`, but opens the *current directory*
 
 **Settings**
 
@@ -54,8 +56,8 @@ Same installation as most Vim plugins, or use a package manager:
 
 ## Todo
 
-* Powershell
-* try to find mintty and use it instead of cmd.exe
+* look for [posh](https://github.com/dahlbyk/posh-git) instead of vanilla Powershell
+* look for mintty instead of cmd.exe
 * support shells other than bash (zsh, fish) if `&shell` and friends are configured correctly 
 * goT, goF, goO
 * provide vim commands (GtfoTerminal, GtfoFileman, GtfoOther)
