@@ -1,6 +1,6 @@
 " gtfo.vim - Go to Terminal, File manager, or Other
 " Maintainer:   Justin M. Keyes
-" Version:      0.1
+" Version:      1.0
 
 " TODO: https://github.com/vim-scripts/open-terminal-filemanager
 " TODO: directory traversal: https://github.com/tpope/vim-sleuth/
@@ -17,6 +17,8 @@ let s:cpo_save = &cpo
 set cpo&vim
 
 let s:is_windows = has('win32') || has('win64')
+"vim is running in 'vanilla' (non-msysgit) cygwin
+let s:is_cygwin = has('win32unix') || has('win64unix')
 let s:is_mac = has('gui_macvim') || has('mac')
 let s:is_unix = has('unix')
 let s:is_tmux = !(empty($TMUX))
@@ -67,7 +69,9 @@ func! s:mac_open_other_terminal()
 endf
 
 if maparg('gof', 'n') ==# ''
-  if !s:is_gui_available && !executable('xdg-open')
+  if s:is_cygwin && executable('cygstart')
+    nnoremap <silent> gof :silent execute '!cygstart explorer /select,`cygpath -w '''.expand("%:p").'''`' <bar> redraw!<cr>
+  elseif !s:is_gui_available && !executable('xdg-open')
     if s:is_tmux "fallback to 'got'
       nnoremap <silent> gof :normal got<cr>
     else "what environment are you using?
@@ -98,7 +102,10 @@ if s:is_windows && !exists('g:gtfo_cygwin_bash')
 endif
 
 if maparg('got', 'n') ==# ''
-  if s:is_tmux
+  if s:is_cygwin && executable('cygstart') && executable('mintty')
+    " https://code.google.com/p/mintty/wiki/Tips
+    nnoremap <silent> got :silent execute '!cd ''' . expand("%:p:h") . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash -l -i' <bar> redraw!<cr>
+  elseif s:is_tmux
     nnoremap <silent> got :silent execute '!tmux split-window -h \; send-keys "cd ''' . expand("%:p:h") . '''" C-m'<cr>
   elseif s:is_windows
     if executable(g:gtfo_cygwin_bash)

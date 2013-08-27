@@ -2,10 +2,9 @@
 
 Opens the directory of the *current buffer* in the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
 or the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator). **No configuration.**
-Just works™ on [tmux](http://tmux.sourceforge.net/), Windows, OS X, Linux. 
-Supports vim and gvim, GUI or no GUI (tty console, ssh). 
+Just works™ in [tmux](http://tmux.sourceforge.net/), cygwin/mintty, msysgit, 
+Windows, OS X, and Linux. Supports vim and gvim, GUI or no GUI (tty console, ssh).
 
-Does not override existing bindings (try `:verbose map gof | map got`)
 
 This simple feature is missing or cumbersome in many IDEs and editors:
 * [missing in Eclipse](https://bugs.eclipse.org/bugs/show_bug.cgi?id=107436)
@@ -16,15 +15,16 @@ This simple feature is missing or cumbersome in many IDEs and editors:
 ## Features
 
 **Normal-mode key bindings: got, gof, goo**
+* Existing bindings will not be overridden (try `:verbose map gof | map got`)
 * `gof`: **Go** to the current buffer's directory in the **F**ile manager 
     * *Windows:* opens Windows Explorer
     * *Mac OS X:* opens Finder
     * *Linux:* defers to [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html)
-        * `xdg-open` also works without a GUI (ssh or tty console)
 * `got`: **Go** to the current buffer's directory in the **T**erminal
     * *Windows:* opens "Git bash" ([msysgit](http://msysgit.github.io/))
         * else, falls back to ["vanilla" Cygwin](http://www.cygwin.org)
         * else, falls back to `%COMSPEC%` (cmd.exe)
+    * *Cygwin (mintty):* opens a new mintty console
     * *Mac OS X:* opens Terminal
     * *Linux:* opens `gnome-terminal`
     * *tmux:* opens a new pane
@@ -48,6 +48,11 @@ Same installation as most Vim plugins, or use a package manager:
 * [neobundle](https://github.com/Shougo/neobundle.vim)
 * [pathogen.vim](https://github.com/tpope/vim-pathogen):
   `cd ~/.vim/bundle && git clone git://github.com/justinmk/vim-gtfo.git`
+
+## FAQ
+
+* `xdg-open` also works without a GUI (ssh or tty console), but its default might 
+  not be what you want. Try: `xdg-mime default application/x-directory foo`
 
 ## Credits
 
