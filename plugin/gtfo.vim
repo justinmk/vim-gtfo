@@ -117,7 +117,7 @@ if maparg('got', 'n') ==# ''
       nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /k "cd "'.expand("%:p:h").'""'<cr>
     endif
   elseif s:is_mac
-    nnoremap <silent> got :silent call <sid>mac_open_terminal()<cr>
+    nnoremap <silent> got :silent execute "!open -a Terminal '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
   elseif s:is_gui_available && executable('gnome-terminal')
     nnoremap <silent> got :silent execute 'silent ! gnome-terminal --window -e "bash -c \"cd '''.expand("%:p:h").''' ; bash\"" &'<cr>
   else
