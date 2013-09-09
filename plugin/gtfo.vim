@@ -89,6 +89,7 @@ if maparg('gof', 'n') ==# ''
   endif
 endif
 
+" TODO: \opt\cygwin\bin\mintty.exe /bin/env CHERE_INVOKING=1 /bin/bash [args?]
 if s:is_windows && !exists('g:gtfo_cygwin_bash')
   "try 'Program Files', else fall back to 'Program Files (x86)'.
   let g:gtfo_cygwin_bash = (exists('$ProgramW6432') ? $ProgramW6432 : $ProgramFiles) . '/Git/bin/bash.exe'
@@ -104,7 +105,8 @@ endif
 if maparg('got', 'n') ==# ''
   if s:is_cygwin && executable('cygstart') && executable('mintty')
     " https://code.google.com/p/mintty/wiki/Tips
-    nnoremap <silent> got :silent execute '!cd ''' . expand("%:p:h") . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash -l -i' <bar> redraw!<cr>
+    " TODO: cygstart mintty /bin/env CHERE_INVOKING=1 SHELL=/bin/zsh zsh [args?]
+    nnoremap <silent> got :silent execute '!cd ''' . expand("%:p:h") . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash' <bar> redraw!<cr>
   elseif s:is_tmux
     nnoremap <silent> got :silent execute '!tmux split-window -h \; send-keys "cd ''' . expand("%:p:h") . '''" C-m'<cr>
   elseif s:is_windows
@@ -117,8 +119,8 @@ if maparg('got', 'n') ==# ''
       nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /k "cd "'.expand("%:p:h").'""'<cr>
     endif
   elseif s:is_mac
-    if ($TERM_PROGRAM == 'iTerm.app')
-      nnoremap <silent> goo :silent call <sid>mac_open_iTerm()<cr>
+    if $TERM_PROGRAM ==? 'iTerm.app'
+      nnoremap <silent> got :silent call <sid>mac_open_iTerm()<cr>
     else
       nnoremap <silent> got :silent execute "!open -a Terminal '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
     endif
