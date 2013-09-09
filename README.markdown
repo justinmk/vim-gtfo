@@ -5,13 +5,6 @@ or the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator). **No configur
 Just works™ in [tmux](http://tmux.sourceforge.net/), cygwin/mintty, msysgit, 
 Windows, OS X, and Linux. Supports vim and gvim, GUI or no GUI (tty console, ssh).
 
-
-This simple feature is missing or cumbersome in many IDEs and editors:
-* [missing in Eclipse](https://bugs.eclipse.org/bugs/show_bug.cgi?id=107436)
-* clunky in Visual Studio
-* Intellij requires a plugin (oh the irony!)
-* Vim `ctrl-z` and `:shell` do not open to the buffer's directory
-
 ## Features
 
 **Normal-mode key bindings: got, gof, goo**
@@ -25,7 +18,7 @@ This simple feature is missing or cumbersome in many IDEs and editors:
         * else, falls back to ["vanilla" Cygwin](http://www.cygwin.org)
         * else, falls back to `%COMSPEC%` (cmd.exe)
     * *Cygwin (mintty):* opens a new mintty console
-    * *Mac OS X:* opens Terminal
+    * *Mac OS X:* opens Terminal *unless* Vim is running in iTerm
     * *Linux:* opens `gnome-terminal`
     * *tmux:* opens a new pane
 * `goo`: **Go** to the current buffer's directory in some **O**ther terminal
@@ -38,7 +31,8 @@ This simple feature is missing or cumbersome in many IDEs and editors:
 
 **Settings**
 
-* `g:gtfo_cygwin_bash` : absolute path to cygwin bash executable (example: "C:\cygwin\bin\bash")
+* `g:gtfo_cygwin_bash` : absolute path to bash executable 
+  (example: `'C:\cygwin\bin\bash'`)
 
 ## Installation
 
@@ -51,23 +45,23 @@ Same installation as most Vim plugins, or use a package manager:
 
 ## FAQ
 
-* `xdg-open` also works without a GUI (ssh or tty console), but its default might 
+> On Linux without a gui, 'gof' does nothing, or launches w3m. Why?
+* `xdg-open` works without a GUI (ssh or tty console), but its default might 
   not be what you want. Try: `xdg-mime default application/x-directory foo`
 
 ## Credits
 
 * Sangmin Ryu, [open-terminal-filemanager](http://www.vim.org/scripts/script.php?script_id=2896)
 * @tpope, for impeccable Vim plugin reference implementations
+* [EasyShell](http://marketplace.eclipse.org/node/974#.Ui1kc2R273E)
 
 ## Todo
 
 * look for [posh](https://github.com/dahlbyk/posh-git) instead of vanilla Powershell
 * look for mintty instead of cmd.exe
-* support shells other than bash (zsh, fish) if `&shell` and friends are configured correctly 
-* goT, goF, goO
+* support shells other than bash (zsh, fish)?
 * provide vim commands (GtfoTerminal, GtfoFileman, GtfoOther)
 * if [vimux](https://github.com/benmills/vimux) is available, defer to it for tmux behavior
-* conemu?
 
 ## License
 

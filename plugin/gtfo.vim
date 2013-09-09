@@ -1,6 +1,6 @@
 " gtfo.vim - Go to Terminal, File manager, or Other
 " Maintainer:   Justin M. Keyes
-" Version:      1.0
+" Version:      1.1
 
 " TODO: https://github.com/vim-scripts/open-terminal-filemanager
 " TODO: directory traversal: https://github.com/tpope/vim-sleuth/
@@ -52,7 +52,7 @@ func! s:mac_open_terminal()
   call <sid>mac_do_ascript_voodoo(l:cmd)
 endf
 
-func! s:mac_open_other_terminal()
+func! s:mac_open_iTerm()
   let l:cmd = "
         \ tell application 'iTerm'                             \n
         \   set term to (make new terminal)                    \n
@@ -117,7 +117,11 @@ if maparg('got', 'n') ==# ''
       nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /k "cd "'.expand("%:p:h").'""'<cr>
     endif
   elseif s:is_mac
-    nnoremap <silent> got :silent execute "!open -a Terminal '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
+    if ($TERM_PROGRAM == 'iTerm.app')
+      nnoremap <silent> goo :silent call <sid>mac_open_iTerm()<cr>
+    else
+      nnoremap <silent> got :silent execute "!open -a Terminal '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
+    endif
   elseif s:is_gui_available && executable('gnome-terminal')
     nnoremap <silent> got :silent execute 'silent ! gnome-terminal --window -e "bash -c \"cd '''.expand("%:p:h").''' ; bash\"" &'<cr>
   else
@@ -129,7 +133,7 @@ if maparg('goo', 'n') ==# ''
   if s:is_windows
     nnoremap <silent> goo :silent exe '!start powershell -NoLogo -NoExit -Command "cd '''.expand("%:p:h").'''"'<cr>
   elseif s:is_mac
-    nnoremap <silent> goo :silent call <sid>mac_open_other_terminal()<cr>
+    nnoremap <silent> goo :silent call <sid>mac_open_iTerm()<cr>
   endif
 endif
 
