@@ -1,5 +1,5 @@
 " gtfo.vim - Go to Terminal, File manager, or Other
-" Maintainer:   Justin M. Keyes
+" Author:       Justin M. Keyes
 " Version:      1.1
 
 " TODO: https://github.com/vim-scripts/open-terminal-filemanager
@@ -8,9 +8,8 @@
 
 if exists('g:loaded_gtfo') || &compatible
   finish
-else
-  let g:loaded_gtfo = 1
 endif
+let g:loaded_gtfo = 1
 
 " Turn on support for line continuations when creating the script
 let s:cpo_save = &cpo
@@ -38,7 +37,7 @@ func! s:mac_do_ascript_voodoo(cmd)
   "replace ' with \"'
   let l:cmd = substitute(a:cmd,  "'", '\\"', 'g')
   "replace ___ with the shell command to be passed from applescript to Terminal.app.
-  let l:cmd = substitute(l:cmd, '___', "cd '".expand("%:p:h")."'", 'g')
+  let l:cmd = substitute(l:cmd, '___', "cd '".<sid>getdir()."'", 'g')
   call system('osascript -e " ' . l:cmd . '"')
 endf
 
@@ -68,6 +67,15 @@ func! s:mac_open_iTerm()
   call <sid>mac_do_ascript_voodoo(l:cmd)
 endf
 
+func! s:getdir()
+  let l:dir = expand("%:p:h")
+  if !isdirectory(l:dir)
+    "this happens if a directory was deleted outside of vim.
+    echoerr 'gtfo: invalid directory: '.l:dir
+  endif
+  return l:dir
+endf
+
 if maparg('gof', 'n') ==# ''
   if s:is_cygwin && executable('cygstart')
     nnoremap <silent> gof :silent execute '!cygstart explorer /select,`cygpath -w '''.expand("%:p").'''`' <bar> redraw!<cr>
@@ -80,9 +88,9 @@ if maparg('gof', 'n') ==# ''
   elseif s:is_windows
     nnoremap <silent> gof :silent !start explorer /select,%:p<cr>
   elseif s:is_mac
-    nnoremap <silent> gof :silent execute "!open '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
+    nnoremap <silent> gof :silent execute "!open '".<sid>getdir()."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
   elseif executable('xdg-open')
-    nnoremap <silent> gof :silent execute "!xdg-open '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
+    nnoremap <silent> gof :silent execute "!xdg-open '".<sid>getdir()."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
   else
     "instead of complaining every time vim starts up, wait for the user to call 'gof'.
     nnoremap <silent> gof :echoerr 'gtfo.vim: xdg-open is not in your $PATH. Try "sudo apt-get install xdg-utils".'<cr>
@@ -106,26 +114,26 @@ if maparg('got', 'n') ==# ''
   if s:is_cygwin && executable('cygstart') && executable('mintty')
     " https://code.google.com/p/mintty/wiki/Tips
     " TODO: cygstart mintty /bin/env CHERE_INVOKING=1 SHELL=/bin/zsh zsh [args?]
-    nnoremap <silent> got :silent execute '!cd ''' . expand("%:p:h") . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash' <bar> redraw!<cr>
+    nnoremap <silent> got :silent execute '!cd ''' . <sid>getdir() . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash' <bar> redraw!<cr>
   elseif s:is_tmux
-    nnoremap <silent> got :silent execute '!tmux split-window -h \; send-keys "cd ''' . expand("%:p:h") . '''" C-m'<cr>
+    nnoremap <silent> got :silent execute '!tmux split-window -h \; send-keys "cd ''' . <sid>getdir() . '''" C-m'<cr>
   elseif s:is_windows
     if executable(g:gtfo_cygwin_bash)
       " HACK: Execute bash (again) immediately after -c to prevent exit.
       "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
       " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
-      nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""' . g:gtfo_cygwin_bash . '" "--login" "-i" "-c" "cd '''.expand("%:p:h").''' ; bash" "'<cr>
+      nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /c ""' . g:gtfo_cygwin_bash . '" "--login" "-i" "-c" "cd '''.<sid>getdir().''' ; bash" "'<cr>
     else "fall back to cmd.exe
-      nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /k "cd "'.expand("%:p:h").'""'<cr>
+      nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /k "cd "'.<sid>getdir().'""'<cr>
     endif
   elseif s:is_mac
     if $TERM_PROGRAM ==? 'iTerm.app'
       nnoremap <silent> got :silent call <sid>mac_open_iTerm()<cr>
     else
-      nnoremap <silent> got :silent execute "!open -a Terminal '".expand("%:p:h")."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
+      nnoremap <silent> got :silent execute "!open -a Terminal '".<sid>getdir()."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
     endif
   elseif s:is_gui_available && executable('gnome-terminal')
-    nnoremap <silent> got :silent execute 'silent ! gnome-terminal --window -e "bash -c \"cd '''.expand("%:p:h").''' ; bash\"" &'<cr>
+    nnoremap <silent> got :silent execute 'silent ! gnome-terminal --window -e "bash -c \"cd '''.<sid>getdir().''' ; bash\"" &'<cr>
   else
     nnoremap <silent> got :shell<cr>
   endif
@@ -133,7 +141,7 @@ endif
 
 if maparg('goo', 'n') ==# ''
   if s:is_windows
-    nnoremap <silent> goo :silent exe '!start powershell -NoLogo -NoExit -Command "cd '''.expand("%:p:h").'''"'<cr>
+    nnoremap <silent> goo :silent exe '!start powershell -NoLogo -NoExit -Command "cd '''.<sid>getdir().'''"'<cr>
   elseif s:is_mac
     nnoremap <silent> goo :silent call <sid>mac_open_iTerm()<cr>
   endif
