@@ -71,14 +71,23 @@ func! s:getdir()
   let l:dir = expand("%:p:h")
   if !isdirectory(l:dir)
     "this happens if a directory was deleted outside of vim.
-    echoerr 'gtfo: invalid directory: '.l:dir
+    echoerr 'gtfo: invalid/missing directory: '.l:dir
   endif
   return l:dir
 endf
 
+func! s:getfile()
+  let l:file = expand("%:p")
+  if !filereadable(l:file)
+    "this happens if a file was deleted outside of vim.
+    echoerr 'gtfo: invalid/missing file: '.l:file
+  endif
+  return l:file
+endf
+
 if maparg('gof', 'n') ==# ''
   if s:is_cygwin && executable('cygstart')
-    nnoremap <silent> gof :silent execute '!cygstart explorer /select,`cygpath -w '''.expand("%:p").'''`' <bar> redraw!<cr>
+    nnoremap <silent> gof :silent execute '!cygstart explorer /select,`cygpath -w '''.<sid>getfile().'''`' <bar> redraw!<cr>
   elseif !s:is_gui_available && !executable('xdg-open')
     if s:is_tmux "fallback to 'got'
       nnoremap <silent> gof :normal got<cr>
@@ -86,9 +95,9 @@ if maparg('gof', 'n') ==# ''
       nnoremap <silent> gof :shell<cr>
     endif
   elseif s:is_windows
-    nnoremap <silent> gof :silent !start explorer /select,%:p<cr>
+    nnoremap <silent> gof :silent !start explorer /select,<sid>getfile()<cr>
   elseif s:is_mac
-    nnoremap <silent> gof :silent execute "!open '".<sid>getdir()."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
+    nnoremap <silent> gof :silent execute "!open --reveal '".<sid>getfile()."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
   elseif executable('xdg-open')
     nnoremap <silent> gof :silent execute "!xdg-open '".<sid>getdir()."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
   else
