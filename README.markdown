@@ -1,9 +1,9 @@
-# gtfo.vim: Go to Terminal or File manager
+# gtfo.vim
 
 Opens the directory of the *current buffer* in the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
 or the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator).
-Just works™ in [tmux](http://tmux.sourceforge.net/), cygwin/mintty, msysgit, 
-Windows, OS X, and Linux. Supports vim and gvim, GUI or no GUI (tty console, ssh).
+Just works™ in [tmux](http://tmux.sourceforge.net/), [Cygwin](http://www.cygwin.com/), 
+[Git bash](http://msysgit.github.io/), Windows, OS X, and Linux.
 
 ## Features
 
@@ -20,7 +20,7 @@ Existing bindings will not be overridden (try `:verbose map gof | map got`).
 
 ## Platform Support
 
-*tmux (all platforms)*
+**tmux (all platforms)**
 * If Vim is running in a tmux session, `got` opens a new tmux pane
 
 **Cygwin**
@@ -33,7 +33,7 @@ Existing bindings will not be overridden (try `:verbose map gof | map got`).
   * [Cygwin](http://www.cygwin.org) mintty
   * `%COMSPEC%` (cmd.exe)
 
-**Mac**
+**Mac OS X**
 * File manager is Finder
 * Terminal defaults to Terminal.app
   * If Vim is running in iTerm, `got` opens a new iTerm window
@@ -41,11 +41,10 @@ Existing bindings will not be overridden (try `:verbose map gof | map got`).
 **Linux**
 * File manager is determined by [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html), 
   the Linux desktop standard utility.
-* Terminal defaults to `gnome-terminal`, unless an alternative is found.
-  Alternative terminals are as follows, in order of preference:
+* Terminal defaults to `gnome-terminal`, unless one of these alternatives is found:
   * Termite
 
-**Settings**
+## Settings
 
 * `g:gtfo_cygwin_bash` : absolute path to bash executable 
   (example: `'C:\cygwin\bin\bash'`)
