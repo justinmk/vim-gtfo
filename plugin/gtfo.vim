@@ -15,20 +15,21 @@ let g:loaded_gtfo = 1
 let s:cpo_save = &cpo
 set cpo&vim
 
-let s:is_windows = has('win32') || has('win64')
+let s:iswin = has('win32') || has('win64')
 "vim is running in 'vanilla' (non-msysgit) cygwin
 let s:is_cygwin = has('win32unix') || has('win64unix')
-let s:is_mac = has('gui_macvim') || has('mac')
-let s:is_unix = has('unix')
+let s:ismac = has('gui_macvim') || has('mac')
+let s:isunix = !s:iswin && !s:ismac
 let s:is_tmux = !(empty($TMUX))
-let s:is_unix_gui = !empty($DISPLAY) && $TERM !=# 'linux'
-"even if vim is in a terminal, there may still be a gui file manager available
-let s:is_gui_available = s:is_mac || s:is_windows || s:is_unix_gui
+"non-GUI Vim running within a GUI
+let s:is_gui_available = s:ismac || s:iswin || (!empty($DISPLAY) && $TERM !=# 'linux')
 
 func! s:is_gui()
   return has('gui_running') || &term ==? 'builtin_gui'
 endf
 
+"AppleScript backflips {{{
+if s:ismac
 func! s:mac_do_ascript_voodoo(cmd)
   "This is somewhat complicated because we must pass a correctly-escaped,
   "newline-delimitd applescript literal from vim => shell => osascript.
@@ -66,6 +67,7 @@ func! s:mac_open_iTerm()
         \ "
   call <sid>mac_do_ascript_voodoo(l:cmd)
 endf
+endif "}}}
 
 func! s:getdir()
   let l:dir = expand("%:p:h")
@@ -94,9 +96,9 @@ if maparg('gof', 'n') ==# ''
     else "what environment are you using?
       nnoremap <silent> gof :shell<cr>
     endif
-  elseif s:is_windows
+  elseif s:iswin
     nnoremap <silent> gof :silent !start explorer /select,<sid>getfile()<cr>
-  elseif s:is_mac
+  elseif s:ismac
     nnoremap <silent> gof :silent execute "!open --reveal '".<sid>getfile()."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
   elseif executable('xdg-open')
     nnoremap <silent> gof :silent execute "!xdg-open '".<sid>getdir()."'" <bar> if !<sid>is_gui()<bar>redraw!<bar>endif<cr>
@@ -107,7 +109,7 @@ if maparg('gof', 'n') ==# ''
 endif
 
 " TODO: \opt\cygwin\bin\mintty.exe /bin/env CHERE_INVOKING=1 /bin/bash [args?]
-if s:is_windows && !exists('g:gtfo_cygwin_bash')
+if s:iswin && !exists('g:gtfo_cygwin_bash')
   "try 'Program Files', else fall back to 'Program Files (x86)'.
   let g:gtfo_cygwin_bash = (exists('$ProgramW6432') ? $ProgramW6432 : $ProgramFiles) . '/Git/bin/bash.exe'
   if !executable(g:gtfo_cygwin_bash)
@@ -126,7 +128,7 @@ if maparg('got', 'n') ==# ''
     nnoremap <silent> got :silent execute '!cd ''' . <sid>getdir() . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash' <bar> redraw!<cr>
   elseif s:is_tmux
     nnoremap <silent> got :silent execute '!tmux split-window -h \; send-keys "cd ''' . <sid>getdir() . '''" C-m'<cr>
-  elseif s:is_windows
+  elseif s:iswin
     if executable(g:gtfo_cygwin_bash)
       " HACK: Execute bash (again) immediately after -c to prevent exit.
       "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
@@ -135,7 +137,7 @@ if maparg('got', 'n') ==# ''
     else "fall back to cmd.exe
       nnoremap <silent> got :silent exe '!start '.$COMSPEC.' /k "cd "'.<sid>getdir().'""'<cr>
     endif
-  elseif s:is_mac
+  elseif s:ismac
     if $TERM_PROGRAM ==? 'iTerm.app'
       nnoremap <silent> got :silent call <sid>mac_open_iTerm()<cr>
     else
@@ -149,12 +151,14 @@ if maparg('got', 'n') ==# ''
 endif
 
 if maparg('goo', 'n') ==# ''
-  if s:is_windows
+  if s:iswin
     nnoremap <silent> goo :silent exe '!start powershell -NoLogo -NoExit -Command "cd '''.<sid>getdir().'''"'<cr>
-  elseif s:is_mac
+  elseif s:ismac
     nnoremap <silent> goo :silent call <sid>mac_open_iTerm()<cr>
   endif
 endif
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
+
+" vim: foldmethod=indent foldlevel=99
