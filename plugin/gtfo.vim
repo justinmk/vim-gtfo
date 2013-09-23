@@ -17,10 +17,10 @@ set cpo&vim
 
 let s:iswin = has('win32') || has('win64')
 "vim is running in 'vanilla' (non-msysgit) cygwin
-let s:is_cygwin = has('win32unix') || has('win64unix')
+let s:iscygwin = has('win32unix') || has('win64unix')
 let s:ismac = has('gui_macvim') || has('mac')
 let s:isunix = !s:iswin && !s:ismac
-let s:is_tmux = !(empty($TMUX))
+let s:istmux = !(empty($TMUX))
 "GUI Vim
 let s:isgui = has('gui_running') || &term ==? 'builtin_gui'
 "non-GUI Vim running within a GUI environment
@@ -39,7 +39,7 @@ if s:iswin && !exists('g:gtfo_cygwin_bash')
   endif
 endif
 
-func! s:openfileman(path)
+func! s:openfileman(path) "{{{
   let l:path = expand(a:path)
   let l:dir = isdirectory(l:path) ? l:path : fnamemodify(l:path, ":h")
   let l:validfile = filereadable(l:path)
@@ -49,7 +49,7 @@ func! s:openfileman(path)
     return
   endif
 
-  if s:is_cygwin && executable('cygstart')
+  if s:iscygwin && executable('cygstart')
     if l:validfile
       silent exec "!cygstart explorer /select,`cygpath -w '".l:path."'`"
     else
@@ -57,7 +57,7 @@ func! s:openfileman(path)
     endif
     redraw!
   elseif !s:is_gui_available && !executable('xdg-open')
-    if s:is_tmux "fallback to 'got'
+    if s:istmux "fallback to 'got'
       call openterm(l:dir)
     else "file a bug report!
       shell
@@ -82,21 +82,21 @@ func! s:openfileman(path)
     "instead of complaining every time vim starts up, wait for invocation.
     echoerr 'gtfo: xdg-open is not in your $PATH. Try "sudo apt-get install xdg-utils"'
   endif
-endf
+endf "}}}
 
-func! s:openterm(dir, cmd)
+func! s:openterm(dir, cmd) "{{{
   let l:dir = expand(a:dir)
   if !isdirectory(l:dir) "this happens if a directory was deleted outside of vim.
     echom 'gtfo: invalid/missing directory: '.l:dir
     return
   endif
 
-  if s:is_cygwin && executable('cygstart') && executable('mintty')
+  if s:iscygwin && executable('cygstart') && executable('mintty')
     " https://code.google.com/p/mintty/wiki/Tips
     " TODO: cygstart mintty /bin/env CHERE_INVOKING=1 SHELL=/bin/zsh zsh [args?]
     silent exec '!cd ''' . l:dir . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
     redraw!
-  elseif s:is_tmux
+  elseif s:istmux
     silent exec '!tmux split-window -h \; send-keys "cd ''' . l:dir . '''" C-m'
   elseif s:iswin
     if executable(g:gtfo_cygwin_bash)
@@ -116,12 +116,19 @@ func! s:openterm(dir, cmd)
         redraw!
       endif
     endif
-  elseif s:is_gui_available && executable('gnome-terminal')
-    silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; bash\"" &'
+  elseif s:is_gui_available
+    "Termite also uses the -e flag to pass in commands to run when the session starts
+    if executable('termite')
+      silent exec "silent ! termite -d '".l:dir."'"
+    elseif executable('gnome-terminal')
+      silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; bash\"" &'
+    else "file a feature request!
+      shell
+    endif
   else
     shell
   endif
-endf
+endf "}}}
 
 if s:ismac "{{{
 func! s:mac_do_ascript_voodoo(cmd, expanded_dir)
