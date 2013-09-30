@@ -1,24 +1,30 @@
 # gtfo.vim
 
-Opens the directory of the *current buffer* in the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
-or the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator).
-Just works™ in [tmux](http://tmux.sourceforge.net/), [Cygwin](http://www.cygwin.com/), 
+This plugin provides these simple features:
+* Press `gof` in normal-mode to open the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
+  at the directory of the file you are currently editing in Vim.
+* Press `got` in normal-mode to open the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator)
+  at the directory of the file you are currently editing in Vim.
+
+<!-- * Enter `:Gtfo <arbitrary shell command>` to run any command in a new terminal relative to the current file. -->
+
+gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), [Cygwin](http://www.cygwin.com/), 
 [Git bash](http://msysgit.github.io/), Windows, OS X, and Linux.
 
-## Features
+### Features
 
 **Normal-mode key bindings**
-* `gof`: **Go** to the current buffer's directory in the **F**ile manager 
-* `got`: **Go** to the current buffer's directory in the **T**erminal
+* `gof`: **Go** to the current file's directory in the **F**ile manager 
+* `got`: **Go** to the current file's directory in the **T**erminal
   * See the *Platform Support* section (below) for details on which terminal is chosen
-* `goF`: like `gof`, but opens the *current directory*, that is, the directory
-  returned by `:pwd`. Think of this as your "project directory" for the current
-  Vim session.
-* `goT`: like `got`, but opens the *current directory*
+* `goF`: like `gof` for the current "session" directory, that is, the directory
+  returned by `:pwd`
+* `goT`: like `got` for the current "session" directory
 
-Existing bindings will not be overridden (try `:verbose map gof | map got`).
+Existing bindings will not be overridden. Try `:verbose map gof | map got` to 
+see if some other plugin is using those mappings.
 
-## Platform Support
+### Platform Support
 
 **tmux (all platforms)**
 * If Vim is running in a tmux session, `got` opens a new tmux pane
@@ -35,8 +41,7 @@ Existing bindings will not be overridden (try `:verbose map gof | map got`).
 
 **Mac OS X**
 * File manager is Finder
-* Terminal defaults to Terminal.app
-  * If Vim is running in iTerm, `got` opens a new iTerm window
+* Terminal defaults to Terminal.app *unless* Vim is running in iTerm.
 
 **Linux**
 * File manager is determined by [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html), 
@@ -44,12 +49,12 @@ Existing bindings will not be overridden (try `:verbose map gof | map got`).
 * Terminal defaults to `gnome-terminal`, unless one of these alternatives is found:
   * Termite
 
-## Settings
+### Settings
 
 * `g:gtfo_cygwin_bash` : absolute path to bash executable 
   (example: `'C:\cygwin\bin\bash'`)
 
-## Installation
+### Installation
 
 Same installation as most Vim plugins, or use a plugin manager:
 
@@ -65,30 +70,36 @@ Same installation as most Vim plugins, or use a plugin manager:
   1. Add `Plug 'justinmk/vim-gtfo'` to .vimrc
   2. Run `:PlugInstall`
 
-## FAQ
+### FAQ
+
+> Why not just use `ctrl-z` or `:shell` to drop to a shell?
+
+* `ctrl-z` and `:shell` do not go to the directory of the current file
+* Vim's `&shell` may not be your preferred shell (for example, if you use [fish](http://fishshell.com/)).
+  And it is [not advisable](https://github.com/tpope/vim-sensible/issues/50#issuecomment-19875409) 
+  to set `&shell` to fish. So, opening a new terminal gives you your preferred 
+  shell (assuming you've configured your terminal to do so).
 
 > On Linux without a gui, 'gof' does nothing, or launches w3m
 
 * `xdg-open` defaults to w3m if no GUI is available (eg, in ssh or tty console).
   To change the default: `xdg-mime default application/x-directory foo`
 
-## Credits
+### Credits
 
 * Sangmin Ryu, [open-terminal-filemanager](http://www.vim.org/scripts/script.php?script_id=2896)
 * @tpope, for impeccable Vim plugin reference implementations
 * [EasyShell](http://marketplace.eclipse.org/node/974#.Ui1kc2R273E)
 * [junegunn](https://github.com/junegunn) for some readme copy
 
-## Todo
+### Todo
 
 * look for [posh](https://github.com/dahlbyk/posh-git) instead of vanilla Powershell
 * look for mintty instead of cmd.exe
-* support shells other than bash (zsh, fish)?
-* provide vim command: `GtfoTerm`
+* provide Vim command `Gtfo`
 * if [vimux](https://github.com/benmills/vimux) is available, defer to it for tmux behavior
 
-## License
+### License
 
 Copyright © Justin M. Keyes. Distributed under the same terms as Vim itself.
 See `:help license`.
-
