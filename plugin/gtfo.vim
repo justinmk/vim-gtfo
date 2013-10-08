@@ -70,14 +70,10 @@ func! s:openfileman(path) "{{{
     else
       silent exec "!open '".l:dir."'"
     endif
-    if !s:isgui
-      redraw!
-    endif
+    if !s:isgui | redraw! | endif
   elseif executable('xdg-open')
     silent exec "!xdg-open '".l:dir."'" 
-    if !s:isgui
-      redraw!
-    endif
+    if !s:isgui | redraw! | endif
   else
     "instead of complaining every time vim starts up, wait for invocation.
     echoerr 'gtfo: xdg-open is not in your $PATH. Try "sudo apt-get install xdg-utils"'
@@ -112,9 +108,7 @@ func! s:openterm(dir, cmd) "{{{
       silent call <sid>mac_open_iTerm(l:dir)
     else
       silent exec "!open -a Terminal '".l:dir."'"
-      if !s:isgui
-        redraw!
-      endif
+      if !s:isgui | redraw! | endif
     endif
   elseif s:is_gui_available
     "Termite also uses the -e flag to pass in commands to run when the session starts
@@ -125,6 +119,7 @@ func! s:openterm(dir, cmd) "{{{
     else "file a feature request!
       shell
     endif
+    if !s:isgui | redraw! | endif
   else
     shell
   endif
