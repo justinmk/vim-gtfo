@@ -1,9 +1,9 @@
 # gtfo.vim
 
-This plugin provides these simple features:
-* Press `gof` in normal-mode to open the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
+This Vim plugin provides two simple features:
+* `gof` opens the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
   at the directory of the file you are currently editing in Vim.
-* Press `got` in normal-mode to open the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator)
+* `got` opens the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator)
   at the directory of the file you are currently editing in Vim.
 
 <!-- * Enter `:Gtfo <arbitrary shell command>` to run any command in a new terminal relative to the current file. -->
