@@ -1,4 +1,4 @@
-# gtfo.vim
+# gtfo.vim :point_right:
 
 This Vim plugin provides two simple features:
 * `gof` opens the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
