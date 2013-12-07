@@ -2,7 +2,6 @@
 " Author:       Justin M. Keyes
 " Version:      1.1
 
-" TODO: https://github.com/vim-scripts/open-terminal-filemanager
 " TODO: directory traversal: https://github.com/tpope/vim-sleuth/
 " also :h findfile()
 
@@ -27,17 +26,23 @@ let s:isgui = has('gui_running') || &term ==? 'builtin_gui'
 let s:is_gui_available = s:ismac || s:iswin || (!empty($DISPLAY) && $TERM !=# 'linux')
 
 " TODO: \opt\cygwin\bin\mintty.exe /bin/env CHERE_INVOKING=1 /bin/bash [args?]
+func! s:init_win()
 if s:iswin && !exists('g:gtfo_cygwin_bash')
   "try 'Program Files', else fall back to 'Program Files (x86)'.
-  let g:gtfo_cygwin_bash = (exists('$ProgramW6432') ? $ProgramW6432 : $ProgramFiles) . '/Git/bin/bash.exe'
-  if !executable(g:gtfo_cygwin_bash)
-    let g:gtfo_cygwin_bash = $ProgramFiles.'/Git/bin/bash.exe'
-    if !executable(g:gtfo_cygwin_bash)
-      "cannot find msysgit cygwin; look for vanilla cygwin
-      let g:gtfo_cygwin_bash = $SystemDrive.'/cygwin/bin/bash'
+  for programfiles_path in ['$ProgramW6432', '$ProgramFiles', '$ProgramFiles (x86)']
+    let path = expand(programfiles_path).'/Git/bin/bash.exe'
+    if executable(path)
+      let g:gtfo_cygwin_bash = path
+      break
     endif
+  endfor
+  if !exists('g:gtfo_cygwin_bash') "didn't find msysgit cygwin; try vanilla cygwin.
+    let g:gtfo_cygwin_bash = $SystemDrive.'/cygwin/bin/bash'
   endif
 endif
+endf
+
+call s:init_win()
 
 func! s:openfileman(path) "{{{
   let l:path = expand(a:path)
