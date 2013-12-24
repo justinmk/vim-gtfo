@@ -1,6 +1,6 @@
 " gtfo.vim - Go to Terminal, File manager, or Other
 " Author:       Justin M. Keyes
-" Version:      1.1
+" Version:      1.1.1
 
 " TODO: directory traversal: https://github.com/tpope/vim-sleuth/
 " also :h findfile()
@@ -77,7 +77,7 @@ func! s:openfileman(path) "{{{
     endif
     if !s:isgui | redraw! | endif
   elseif executable('xdg-open')
-    silent exec "!xdg-open '".l:dir."'" 
+    silent exec "!xdg-open '".l:dir."' &"
     if !s:isgui | redraw! | endif
   else
     "instead of complaining every time vim starts up, wait for invocation.
