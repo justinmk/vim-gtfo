@@ -150,7 +150,7 @@ func! s:mac_open_terminal(expanded_dir)
         \   activate                      \n
         \ end tell                        \n
         \ "
-  call <sid>mac_do_ascript_voodoo(l:cmd)
+  call s:mac_do_ascript_voodoo(l:cmd, a:expanded_dir)
 endf
 
 func! s:mac_open_iTerm(expanded_dir)
@@ -166,7 +166,7 @@ func! s:mac_open_iTerm(expanded_dir)
         \   activate                                           \n
         \ end tell                                             \n
         \ "
-  call <sid>mac_do_ascript_voodoo(l:cmd)
+  call s:mac_do_ascript_voodoo(l:cmd, a:expanded_dir)
 endf
 endif "}}}
 
