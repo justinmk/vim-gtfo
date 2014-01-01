@@ -1,6 +1,6 @@
 " gtfo.vim - Go to Terminal, File manager, or Other
 " Author:       Justin M. Keyes
-" Version:      1.1.1
+" Version:      1.1.2
 
 " TODO: directory traversal: https://github.com/tpope/vim-sleuth/
 " also :h findfile()
@@ -30,7 +30,7 @@ func! s:init_win()
 if s:iswin && !exists('g:gtfo_cygwin_bash')
   "try 'Program Files', else fall back to 'Program Files (x86)'.
   for programfiles_path in ['$ProgramW6432', '$ProgramFiles', '$ProgramFiles (x86)']
-    let path = expand(programfiles_path).'/Git/bin/bash.exe'
+    let path = expand(programfiles_path, 1).'/Git/bin/bash.exe'
     if executable(path)
       let g:gtfo_cygwin_bash = path
       break
@@ -45,11 +45,20 @@ endf
 call s:init_win()
 
 func! s:openfileman(path) "{{{
-  let l:path = expand(a:path)
+  if exists('+shellslash') && &shellslash
+    "force backslash on Windows, in case &shell is not cmd.exe. issue #11
+    let l:shslash=1 | set noshellslash
+  endif
+
+  let l:path = expand(a:path, 1)
   let l:dir = isdirectory(l:path) ? l:path : fnamemodify(l:path, ":h")
   let l:validfile = filereadable(l:path)
 
-  if !isdirectory(l:dir) "this happens if a directory was moved outside of vim.
+  if exists("l:shslash")
+    set shellslash
+  endif
+
+  if !isdirectory(l:dir) "this happens if the directory was moved/deleted.
     echom 'gtfo: invalid/missing directory: '.l:dir
     return
   endif
@@ -86,7 +95,7 @@ func! s:openfileman(path) "{{{
 endf "}}}
 
 func! s:openterm(dir, cmd) "{{{
-  let l:dir = expand(a:dir)
+  let l:dir = expand(a:dir, 1)
   if !isdirectory(l:dir) "this happens if a directory was deleted outside of vim.
     echom 'gtfo: invalid/missing directory: '.l:dir
     return

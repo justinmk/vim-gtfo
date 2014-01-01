@@ -17,12 +17,11 @@ gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), [Cygwin](http://
 * `gof`: **Go** to the current file's directory in the **F**ile manager 
 * `got`: **Go** to the current file's directory in the **T**erminal
   * See the *Platform Support* section (below) for details on which terminal is chosen
-* `goF`: like `gof` for the current "session" directory, that is, the directory
-  returned by `:pwd`
-* `goT`: like `got` for the current "session" directory
+* `goF`: like `gof` for the current directory (`:pwd`)
+* `goT`: like `got` for the current directory (`:pwd`)
 
-Existing bindings will not be overridden. Try `:verbose map gof | map got` to 
-see if some other plugin is using those mappings.
+Existing bindings will not be overridden. Try `:verbose map gof` to 
+see if some other plugin is using that mapping.
 
 ### Platform Support
 
@@ -33,26 +32,27 @@ see if some other plugin is using those mappings.
 * If Vim is running in Cygwin (mintty), `got` opens a new mintty console
 
 **Windows**
-* File manager is Windows Explorer
-* Terminal defaults to the first terminal that can be found:
+* `gof` opens Windows Explorer
+* `got` opens the first terminal that can be found:
   * "Git bash" ([msysgit](http://msysgit.github.io/))
   * [Cygwin](http://www.cygwin.org) mintty
   * `%COMSPEC%` (cmd.exe)
 
 **Mac OS X**
-* File manager is Finder
-* Terminal defaults to Terminal.app *unless* Vim is running in iTerm.
+* `gof` opens Finder
+* `got` opens Terminal.app *unless* Vim is running in iTerm.
 
 **Linux**
 * File manager is determined by [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html), 
   the Linux desktop standard utility.
-* Terminal defaults to `gnome-terminal`, unless one of these alternatives is found:
+* `got` opens `gnome-terminal`, unless one of these alternatives is found:
   * Termite
 
 ### Settings
 
-* `g:gtfo_cygwin_bash` : absolute path to bash executable 
-  (example: `'C:\cygwin\bin\bash'`)
+* `g:gtfo_cygwin_bash` : absolute path to bash executable, example:
+
+    let g:gtfo_cygwin_bash = 'C:\cygwin\bin\bash'
 
 ### Installation
 
@@ -72,15 +72,7 @@ Same installation as most Vim plugins, or use a plugin manager:
 
 ### FAQ
 
-> Why not just use `ctrl-z` or `:shell` to drop to a shell?
-
-* `ctrl-z` and `:shell` do not go to the directory of the current file
-* Vim's `&shell` may not be your preferred shell (for example, if you use [fish](http://fishshell.com/)).
-  And it is [not advisable](https://github.com/tpope/vim-sensible/issues/50#issuecomment-19875409) 
-  to set `&shell` to fish. So, opening a new terminal gives you your preferred 
-  shell (assuming you've configured your terminal to do so).
-
-> On Linux without a gui, 'gof' does nothing, or launches w3m
+> On Linux without a gui, `gof` does nothing, or launches w3m
 
 * `xdg-open` defaults to w3m if no GUI is available (eg, in ssh or tty console).
   To change the default: `xdg-mime default application/x-directory foo`
