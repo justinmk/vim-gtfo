@@ -116,17 +116,26 @@ func! s:openterm(dir, cmd) "{{{
       if !s:isgui | redraw! | endif
     endif
   elseif s:is_gui_available
-    "Termite also uses the -e flag to pass in commands to run when the session starts
-    if executable('termite')
-      silent exec "silent ! termite -d '".l:dir."'"
-    elseif executable('gnome-terminal')
-      silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; bash\"" &'
-    else "file a feature request!
-      shell
+    "use the env var to detect current DE is better
+    if exists('$DESKTOP_SESSION')
+      if $DESKTOP_SESSION == 'xfce'
+        silent exec "silent ! xfce4-terminal --working-directory='".l:dir."'"
+      elseif $DESKTOP_SESSION == 'gnome'
+        silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; bash\"" &'
+      endif
+    else
+      "Termite also uses the -e flag to pass in commands to run when the session starts
+      if executable('termite')
+        silent exec "silent ! termite -d '".l:dir."'"
+      elseif executable('gnome-terminal')
+        silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; bash\"" &'
+      else "file a feature request!
+        silent exec "silent ! xfce4-terminal --working-directory='".l:dir."'"
+      endif
     endif
     if !s:isgui | redraw! | endif
-  else
-    shell
+    else
+      shell
   endif
 endf "}}}
 
@@ -193,4 +202,3 @@ endif
 
 let &cpo = s:cpo_save
 unlet s:cpo_save
-
