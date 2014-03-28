@@ -44,7 +44,7 @@ endf
 
 call s:init_win()
 
-func! s:openfileman(path) "{{{
+func! gtfo#openfileman(path) "{{{
   if exists('+shellslash') && &shellslash
     "force backslash on Windows, in case &shell is not cmd.exe. issue #11
     let l:shslash=1 | set noshellslash
@@ -72,7 +72,7 @@ func! s:openfileman(path) "{{{
     redraw!
   elseif !s:is_gui_available && !executable('xdg-open')
     if s:istmux "fallback to 'got'
-      call openterm(l:dir)
+      call gtfo#openterm(l:dir)
     else "file a bug report!
       shell
     endif
@@ -94,7 +94,7 @@ func! s:openfileman(path) "{{{
   endif
 endf "}}}
 
-func! s:openterm(dir, cmd) "{{{
+func! gtfo#openterm(dir, cmd) "{{{
   let l:dir = expand(a:dir, 1)
   if !isdirectory(l:dir) "this happens if a directory was deleted outside of vim.
     echom 'gtfo: invalid/missing directory: '.l:dir
@@ -180,16 +180,16 @@ endf
 endif "}}}
 
 if maparg('gof', 'n') ==# ''
-  nnoremap <silent> gof :<c-u>call <sid>openfileman("%:p")<cr>
+  nnoremap <silent> gof :<c-u>call gtfo#openfileman("%:p")<cr>
 endif
 if maparg('got', 'n') ==# ''
-  nnoremap <silent> got :<c-u>call <sid>openterm("%:p:h", "")<cr>
+  nnoremap <silent> got :<c-u>call gtfo#openterm("%:p:h", "")<cr>
 endif
 if maparg('goF', 'n') ==# ''
-  nnoremap <silent> goF :<c-u>call <sid>openfileman(getcwd())<cr>
+  nnoremap <silent> goF :<c-u>call gtfo#openfileman(getcwd())<cr>
 endif
 if maparg('goT', 'n') ==# ''
-  nnoremap <silent> goT :<c-u>call <sid>openterm(getcwd(), "")<cr>
+  nnoremap <silent> goT :<c-u>call gtfo#openterm(getcwd(), "")<cr>
 endif
 
 if maparg('goo', 'n') ==# ''

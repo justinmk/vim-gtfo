@@ -23,6 +23,10 @@ gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), [Cygwin](http://
 Existing bindings will not be overridden. Try `:verbose map gof` to 
 see if some other plugin is using that mapping.
 
+**Functions**
+* `gtfo#openfileman(path)`: open file manager at `path` (may be a filename *or* folder)
+* `gtfo#openterm(dir, cmd)`: open terminal at `dir` (*TODO:* `cmd` parameter)
+
 ### Platform Support
 
 **tmux (all platforms)**
