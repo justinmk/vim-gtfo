@@ -1,6 +1,6 @@
-" gtfo.vim - Go to Terminal, File manager, or Other
+" gtfo.vim - Go to Terminal or File manager
 " Author:       Justin M. Keyes
-" Version:      1.1.2
+" Version:      1.1.3
 
 " TODO: directory traversal: https://github.com/tpope/vim-sleuth/
 " also :h findfile()
@@ -24,6 +24,10 @@ let s:istmux = !(empty($TMUX))
 let s:isgui = has('gui_running') || &term ==? 'builtin_gui'
 "non-GUI Vim running within a GUI environment
 let s:is_gui_available = s:ismac || s:iswin || (!empty($DISPLAY) && $TERM !=# 'linux')
+
+func! s:beep(s)
+  echoerr 'gtfo: failed to open '.a:s
+endf
 
 " TODO: \opt\cygwin\bin\mintty.exe /bin/env CHERE_INVOKING=1 /bin/bash [args?]
 func! s:init_win()
@@ -73,8 +77,8 @@ func! gtfo#openfileman(path) "{{{
   elseif !s:is_gui_available && !executable('xdg-open')
     if s:istmux "fallback to 'got'
       call gtfo#openterm(l:dir)
-    else "file a bug report!
-      shell
+    else
+      call s:beep("file manager")
     endif
   elseif s:iswin
     silent exec '!start explorer '.(l:validfile ? '/select,'.l:path : l:dir)
@@ -130,12 +134,12 @@ func! gtfo#openterm(dir, cmd) "{{{
       silent exec "silent ! termite -d '".l:dir."'"
     elseif executable('gnome-terminal')
       silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; bash\"" &'
-    else "file a feature request!
-      shell
+    else
+      call s:beep("terminal")
     endif
     if !s:isgui | redraw! | endif
   else
-    shell
+    call s:beep("terminal")
   endif
 endf "}}}
 

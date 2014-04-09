@@ -6,8 +6,6 @@ This Vim plugin provides two simple features:
 * `got` opens the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator)
   at the directory of the file you are currently editing in Vim.
 
-<!-- * Enter `:Gtfo <arbitrary shell command>` to run any command in a new terminal relative to the current file. -->
-
 gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), [Cygwin](http://www.cygwin.com/), 
 [Git bash](http://msysgit.github.io/), Windows, OS X, and Linux.
 
