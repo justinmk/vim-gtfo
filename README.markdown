@@ -49,6 +49,7 @@ see if some other plugin is using that mapping.
   the Linux desktop standard utility.
 * `got` opens `gnome-terminal`, unless one of these alternatives is found:
   * Termite
+  * rxvt-unicode
 
 ### Settings
 

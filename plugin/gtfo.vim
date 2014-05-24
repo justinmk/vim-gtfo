@@ -132,6 +132,8 @@ func! gtfo#openterm(dir, cmd) "{{{
     "Termite also uses the -e flag to pass in commands to run when the session starts
     if executable('termite')
       silent exec "silent ! termite -d '".l:dir."'"
+    elseif executable('rxvt-unicode')
+      silent exec "silent ! rxvt-unicode -cd '".l:dir."' &"
     elseif executable('gnome-terminal')
       silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; bash\"" &'
     else
