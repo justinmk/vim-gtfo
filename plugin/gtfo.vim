@@ -122,7 +122,7 @@ func! gtfo#openterm(dir, cmd) "{{{
       silent exe '!start '.$COMSPEC.' /k "cd "'.l:dir.'""'
     endif
   elseif s:ismac
-    if $TERM_PROGRAM ==? 'iTerm.app'
+    if $TERM_PROGRAM ==? 'iTerm.app' || exists('g:gtfo_force_iterm')
       silent call <sid>mac_open_iTerm(l:dir)
     else
       silent exec "!open -a Terminal '".l:dir."'"
