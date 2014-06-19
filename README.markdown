@@ -6,17 +6,16 @@ This Vim plugin provides two simple features:
 * `got` opens the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator)
   at the directory of the file you are currently editing in Vim.
 
-gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), [Cygwin](http://www.cygwin.com/), 
-[Git bash](http://msysgit.github.io/), Windows, OS X, and Linux.
+gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), mintty ([Cygwin](http://www.cygwin.com/), [Babun](https://github.com/babun/babun), etc.), 
+[MSysGit](http://msysgit.github.io/) bash, Windows, OS X, and Linux.
 
 ### Features
 
 **Normal-mode key bindings**
-* `gof`: **Go** to the current file's directory in the **F**ile manager 
-* `got`: **Go** to the current file's directory in the **T**erminal
-  * See the *Platform Support* section (below) for details on which terminal is chosen
-* `goF`: like `gof` for the current directory (`:pwd`)
-* `goT`: like `got` for the current directory (`:pwd`)
+* `gof`: **Go** to the current file's directory in the **File manager** 
+* `got`: **Go** to the current file's directory in the **Terminal**
+* `goF`: like `gof` for the current *working* directory (`:pwd`)
+* `goT`: like `got` for the current *working* directory (`:pwd`)
 
 Existing bindings will not be overridden. Try `:verbose map gof` to 
 see if some other plugin is using that mapping.
@@ -30,13 +29,13 @@ see if some other plugin is using that mapping.
 **tmux (all platforms)**
 * If Vim is running in a tmux session, `got` opens a new tmux pane
 
-**Cygwin**
-* If Vim is running in Cygwin (mintty), `got` opens a new mintty console
+**mintty ([Cygwin](http://www.cygwin.com/), [Babun](https://github.com/babun/babun), etc.)**
+* If Vim is running in mintty, `got` opens a new mintty console
 
 **Windows**
 * `gof` opens Windows Explorer
 * `got` opens the first terminal that can be found:
-  * "Git bash" ([msysgit](http://msysgit.github.io/))
+  * "Git bash" ([MSysGit](http://msysgit.github.io/))
   * [Cygwin](http://www.cygwin.org) mintty
   * `%COMSPEC%` (cmd.exe)
 
@@ -47,15 +46,15 @@ see if some other plugin is using that mapping.
 **Linux**
 * File manager is determined by [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html), 
   the Linux desktop standard utility.
-* `got` opens `gnome-terminal`, unless one of these alternatives is found:
+* `got` opens `gnome-terminal` unless one of these alternatives is found:
   * Termite
   * rxvt-unicode
 
 ### Settings
 
-* `g:gtfo_cygwin_bash` : absolute path to bash executable, example:
+`g:gtfo_cygwin_bash`
 
-    let g:gtfo_cygwin_bash = 'C:\cygwin\bin\bash'
+* Absolute path to bash executable. Example: `let g:gtfo_cygwin_bash = 'C:\cygwin\bin\bash'`
 
 ### Installation
 
