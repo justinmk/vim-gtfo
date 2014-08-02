@@ -135,7 +135,7 @@ func! gtfo#openterm(dir, cmd) "{{{
     elseif executable('rxvt-unicode')
       silent exec "silent ! rxvt-unicode -cd '".l:dir."' &"
     elseif executable('gnome-terminal')
-      silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; bash\"" &'
+      silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; $SHELL\"" &'
     else
       call s:beep("terminal")
     endif
