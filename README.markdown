@@ -46,7 +46,7 @@ see if some other plugin is using that mapping.
 **Linux**
 * File manager is determined by [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html), 
   the Linux desktop standard utility.
-* `got` opens `gnome-terminal` unless one of these alternatives is found:
+* `got` opens `$SHELL` inside `gnome-terminal` unless one of these alternatives is found:
   * Termite
   * rxvt-unicode
 
