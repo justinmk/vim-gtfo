@@ -7,7 +7,7 @@ This Vim plugin provides two simple features:
   at the directory of the file you are currently editing in Vim.
 
 gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), mintty ([Cygwin](http://www.cygwin.com/), [Babun](https://github.com/babun/babun), etc.), 
-[MSysGit](http://msysgit.github.io/) bash, Windows, OS X, and Linux.
+[MSysGit](http://msysgit.github.io/) bash, Windows, OS X, and Unix.
 
 ### Features
 
@@ -43,7 +43,7 @@ see if some other plugin is using that mapping.
 * `gof` opens Finder
 * `got` opens Terminal.app *unless* Vim is running in iTerm.
 
-**Linux**
+**Unix**
 * File manager is determined by [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html), 
   the Linux desktop standard utility.
 * `got` opens `$SHELL` inside `gnome-terminal` unless one of these alternatives is found:

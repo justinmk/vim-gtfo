@@ -1,9 +1,6 @@
 " gtfo.vim - Go to Terminal or File manager
 " Author:       Justin M. Keyes
-" Version:      1.1.3
-
-" TODO: directory traversal: https://github.com/tpope/vim-sleuth/
-" also :h findfile()
+" Version:      1.1.4
 
 if exists('g:loaded_gtfo') || &compatible
   finish
@@ -29,9 +26,7 @@ func! s:beep(s)
   echoerr 'gtfo: failed to open '.a:s
 endf
 
-" TODO: \opt\cygwin\bin\mintty.exe /bin/env CHERE_INVOKING=1 /bin/bash [args?]
 func! s:init_win()
-if s:iswin && !exists('g:gtfo_cygwin_bash')
   "try 'Program Files', else fall back to 'Program Files (x86)'.
   for programfiles_path in ['$ProgramW6432', '$ProgramFiles', '$ProgramFiles (x86)']
     let path = expand(programfiles_path, 1).'/Git/bin/bash.exe'
@@ -43,14 +38,15 @@ if s:iswin && !exists('g:gtfo_cygwin_bash')
   if !exists('g:gtfo_cygwin_bash') "didn't find msysgit cygwin; try vanilla cygwin.
     let g:gtfo_cygwin_bash = $SystemDrive.'/cygwin/bin/bash'
   endif
-endif
 endf
 
-call s:init_win()
+if s:iswin && !exists('g:gtfo_cygwin_bash')
+  call s:init_win()
+endif
 
 func! gtfo#openfileman(path) "{{{
   if exists('+shellslash') && &shellslash
-    "force backslash on Windows, in case &shell is not cmd.exe. issue #11
+    "Windows: force expand() to return `\` paths so explorer.exe won't choke. #11
     let l:shslash=1 | set noshellslash
   endif
 
@@ -107,14 +103,13 @@ func! gtfo#openterm(dir, cmd) "{{{
 
   if s:iscygwin && executable('cygstart') && executable('mintty')
     " https://code.google.com/p/mintty/wiki/Tips
-    " TODO: cygstart mintty /bin/env CHERE_INVOKING=1 SHELL=/bin/zsh zsh [args?]
     silent exec '!cd ''' . l:dir . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
     redraw!
   elseif s:istmux
     silent exec '!tmux split-window -h \; send-keys "cd ''' . l:dir . '''" C-m'
   elseif s:iswin
     if executable(g:gtfo_cygwin_bash)
-      " HACK: Execute bash (again) immediately after -c to prevent exit.
+      " HACK: start redundant shell immediately after -c to prevent exit.
       "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
       " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
       silent exe '!start '.$COMSPEC.' /c ""' . g:gtfo_cygwin_bash . '" "--login" "-i" "-c" "cd '''.l:dir.''' ; bash" "'
@@ -135,7 +130,7 @@ func! gtfo#openterm(dir, cmd) "{{{
     elseif executable('rxvt-unicode')
       silent exec "silent ! rxvt-unicode -cd '".l:dir."' &"
     elseif executable('gnome-terminal')
-      silent exec 'silent ! gnome-terminal --window -e "bash -c \"cd '''.l:dir.''' ; $SHELL\"" &'
+      silent exec 'silent ! gnome-terminal --window -e "$SHELL -c \"cd '''.l:dir.''' ; $SHELL\"" &'
     else
       call s:beep("terminal")
     endif
