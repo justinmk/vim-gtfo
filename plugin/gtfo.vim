@@ -112,7 +112,7 @@ func! gtfo#openterm(dir, cmd) "{{{
       " HACK: start redundant shell immediately after -c to prevent exit.
       "   http://stackoverflow.com/questions/14441855/run-bash-c-without-exit
       " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
-      silent exe '!start '.$COMSPEC.' /c ""' . g:gtfo_cygwin_bash . '" "--login" "-i" "-c" "cd '''.l:dir.''' ; bash" "'
+      silent exe '!start '.$COMSPEC.' /c "cd "'.l:dir.'" & "' . g:gtfo_cygwin_bash . '" --login -i "'
     else "fall back to cmd.exe
       silent exe '!start '.$COMSPEC.' /k "cd "'.l:dir.'""'
     endif
