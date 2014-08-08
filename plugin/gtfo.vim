@@ -77,7 +77,7 @@ func! gtfo#openfileman(path) "{{{
       call s:beep("file manager")
     endif
   elseif s:iswin
-    silent exec '!start explorer '.(l:validfile ? '/select,'.l:path : l:dir)
+    silent exec '!start explorer '.(l:validfile ? '/select,"'.l:path.'"' : l:dir)
   elseif s:ismac
     if l:validfile
       silent exec "!open --reveal '".l:path."'"
