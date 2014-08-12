@@ -99,5 +99,3 @@ Copyright © Justin M. Keyes. Distributed under the same terms as Vim itself.
 See `:help license`.
 
 
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/justinmk/vim-gtfo/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
