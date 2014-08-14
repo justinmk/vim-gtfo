@@ -72,7 +72,7 @@ func! gtfo#openfileman(path) "{{{
     redraw!
   elseif !s:is_gui_available && !executable('xdg-open')
     if s:istmux "fallback to 'got'
-      call gtfo#openterm(l:dir)
+      call gtfo#openterm(l:dir, "")
     else
       call s:beep("file manager")
     endif
