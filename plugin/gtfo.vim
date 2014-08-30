@@ -106,7 +106,7 @@ func! gtfo#openterm(dir, cmd) "{{{
     silent exec '!cd ''' . l:dir . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
     redraw!
   elseif s:istmux
-    silent exec '!tmux split-window -h \; send-keys "cd ''' . l:dir . '''" C-m'
+    silent exec '!tmux split-window -h \; send-keys "cd ''' . l:dir . ''' && clear" C-m'
   elseif s:iswin
     if executable(g:gtfo_cygwin_bash)
       " HACK: start redundant shell immediately after -c to prevent exit.
