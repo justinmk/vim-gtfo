@@ -101,12 +101,12 @@ func! gtfo#openterm(dir, cmd) "{{{
     return
   endif
 
-  if s:iscygwin && executable('cygstart') && executable('mintty')
+  if s:istmux
+    silent exec '!tmux split-window -h \; send-keys "cd ''' . l:dir . ''' && clear" C-m'
+  elseif s:iscygwin && executable('cygstart') && executable('mintty')
     " https://code.google.com/p/mintty/wiki/Tips
     silent exec '!cd ''' . l:dir . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
-    redraw!
-  elseif s:istmux
-    silent exec '!tmux split-window -h \; send-keys "cd ''' . l:dir . ''' && clear" C-m'
+    redraw!    
   elseif s:iswin
     if executable(g:gtfo_cygwin_bash)
       " HACK: start redundant shell immediately after -c to prevent exit.
