@@ -86,13 +86,6 @@ Same installation as most Vim plugins, or use a plugin manager:
 * [EasyShell](http://marketplace.eclipse.org/node/974#.Ui1kc2R273E)
 * [junegunn](https://github.com/junegunn) for some readme copy
 
-### Todo
-
-* look for [posh](https://github.com/dahlbyk/posh-git) instead of vanilla Powershell
-* look for mintty instead of cmd.exe
-* provide Vim command `Gtfo`
-* if [vimux](https://github.com/benmills/vimux) is available, defer to it for tmux behavior
-
 ### License
 
 Copyright © Justin M. Keyes. Distributed under the same terms as Vim itself.
