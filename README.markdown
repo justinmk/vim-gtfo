@@ -56,6 +56,11 @@ see if some other plugin is using that mapping.
 
 * Absolute path to bash executable. Example: `let g:gtfo_cygwin_bash = 'C:\cygwin\bin\bash'`
 
+* `g:gtfo_force_iterm` : if set, forces use of iTerm.app on the Mac. This can
+  be useful when MacVim is running in GUI mode rather than the terminal, where
+  gtfo cannot easily detect whether iTerm is being used by the user as the
+  "standard" terminal.
+
 ### Installation
 
 Same installation as most Vim plugins, or use a plugin manager:
