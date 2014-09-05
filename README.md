@@ -1,17 +1,19 @@
 # gtfo.vim :point_right:
 
 This Vim plugin provides two simple features:
+
 * `gof` opens the [file manager](http://en.wikipedia.org/wiki/File_manager#Examples) 
   at the directory of the file you are currently editing in Vim.
 * `got` opens the [terminal](http://en.wikipedia.org/wiki/Terminal_emulator)
   at the directory of the file you are currently editing in Vim.
 
-gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), mintty ([Cygwin](http://www.cygwin.com/), [Babun](https://github.com/babun/babun), etc.), 
+gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), mintty ([Cygwin](http://www.cygwin.com/), [Babun](https://github.com/babun/babun)), 
 [MSysGit](http://msysgit.github.io/) bash, Windows, OS X, and Unix.
 
 ### Features
 
 **Normal-mode key bindings**
+
 * `gof`: **Go** to the current file's directory in the **File manager** 
 * `got`: **Go** to the current file's directory in the **Terminal**
 * `goF`: like `gof` for the current *working* directory (`:pwd`)
@@ -21,40 +23,57 @@ Existing bindings will not be overridden. Try `:verbose map gof` to
 see if some other plugin is using that mapping.
 
 **Functions**
-* `gtfo#openfileman(path)`: open file manager at `path` (may be a filename *or* folder)
-* `gtfo#openterm(dir, cmd)`: open terminal at `dir` (*TODO:* `cmd` parameter)
+
+* `gtfo#open#file(path)`: opens file manager at `path` (may be a filename *or* folder)
+* `gtfo#open#term(dir, cmd)`: opens terminal at `dir`
+    * *Note:* Currently, the `cmd` parameter is ignored.
+
+**Settings**
+
+* `g:gtfo#terminals` Optional dictionary with one or more of the following keys: `win`, `mac`, `unix`
+
+    The `g:gtfo#terminals.<key>` *value* is the name (or absolute path) of
+    a terminal program followed by the necessary flags (`-e`, `/k`, etc.) for
+    executing a command on startup.
+
+    **Special case (OS X):** To use iTerm instead of Terminal.app, use the special value "iterm":<br/>
+    `let g:gtfo#terminals = { 'mac' : 'iterm' }`
 
 ### Platform Support
 
 **tmux (all platforms)**
-* If Vim is running in a tmux session, `got` opens a new tmux pane
+
+* If Vim is running in a tmux session, `got` opens a new tmux pane.
 
 **mintty ([Cygwin](http://www.cygwin.com/), [Babun](https://github.com/babun/babun), etc.)**
-* If Vim is running in mintty, `got` opens a new mintty console
+
+* If Vim is running in mintty, `got` opens a new mintty console.
 
 **Windows**
-* `gof` opens Windows Explorer
-* `got` opens the first terminal that can be found:
+
+* `gof` opens Windows Explorer.
+* `got` opens `g:gtfo#terminals['win']` *or* the first terminal that can be found:
   * "Git bash" ([MSysGit](http://msysgit.github.io/))
   * [Cygwin](http://www.cygwin.org) mintty
   * `%COMSPEC%` (cmd.exe)
+* To use powershell:<br/>
+  `let g:gtfo#terminals = { 'win' : 'powershell -NoLogo -NoExit -Command' }`
 
 **Mac OS X**
-* `gof` opens Finder
-* `got` opens Terminal.app *unless* Vim is running in iTerm.
+
+* `gof` opens Finder.
+* `got` opens Terminal.app *unless* Vim is running in iTerm or `g:gtfo#terminals['mac']` is set to `'iterm'`:<br/>
+  `let g:gtfo#terminals = { 'mac' : 'iterm' }`
 
 **Unix**
-* File manager is determined by [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html), 
+
+* `gof` opens the file manager determined by [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html), 
   the Linux desktop standard utility.
-* `got` opens `$SHELL` inside `gnome-terminal` unless one of these alternatives is found:
-  * Termite
-  * rxvt-unicode
-
-### Settings
-
-`g:gtfo_cygwin_bash`
-
-* Absolute path to bash executable. Example: `let g:gtfo_cygwin_bash = 'C:\cygwin\bin\bash'`
+* `got` opens `$SHELL` inside `gnome-terminal` unless `g:gtfo#terminals['unix']` is set.
+    * To use termite:<br/>
+      `let g:gtfo#terminals = { 'unix' : 'termite -d' }`
+    * To use rxvt-unicode:<br/>
+      `let g:gtfo#terminals = { 'unix' : 'rxvt-unicode -cd' }`
 
 ### Installation
 
