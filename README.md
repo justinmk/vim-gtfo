@@ -62,7 +62,8 @@ see if some other plugin is using that mapping.
 **Mac OS X**
 
 * `gof` opens Finder.
-* `got` opens Terminal.app *unless* Vim is running in iTerm or `g:gtfo#terminals['mac']` is set to `'iterm'`:<br/>
+* `got` opens Terminal.app *unless* Vim is running in iTerm or `g:gtfo#terminals['mac']` is set.<br/>
+  To force iTerm:<br/>
   `let g:gtfo#terminals = { 'mac' : 'iterm' }`
 
 **Unix**

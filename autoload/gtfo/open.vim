@@ -16,7 +16,6 @@ endf
 func! s:trimws(s)
   return substitute(a:s, '^\s*\(.\{-}\)\s*$', '\1', '')
 endf
-" Returns true if the value is non-empty.
 func! s:empty(s)
   return strlen(s:trimws(a:s)) == 0
 endf
@@ -121,7 +120,7 @@ func! gtfo#open#term(dir, cmd) "{{{
     endif
   elseif s:ismac
     if (s:empty(s:termpath) && $TERM_PROGRAM ==? 'iTerm.app') || s:termpath ==? "iterm"
-      silent call <sid>mac_open_iTerm(l:dir)
+      silent call s:mac_open_iTerm(l:dir)
     else
       if s:empty(s:termpath) | let s:termpath = 'Terminal' | endif
       silent exec "!open -a ".s:termpath." '".l:dir."'"
