@@ -83,8 +83,8 @@ Same installation as most Vim plugins, or use a plugin manager:
 - [Pathogen](https://github.com/tpope/vim-pathogen)
   - `cd ~/.vim/bundle && git clone git://github.com/justinmk/vim-gtfo.git`
 - [Vundle](https://github.com/gmarik/vundle)
-  1. Add `Bundle 'justinmk/vim-gtfo'` to .vimrc
-  2. Run `:BundleInstall`
+  1. Add `Plugin 'justinmk/vim-gtfo'` to .vimrc
+  2. Run `:PluginInstall`
 - [NeoBundle](https://github.com/Shougo/neobundle.vim)
   1. Add `NeoBundle 'justinmk/vim-gtfo'` to .vimrc
   2. Run `:NeoBundleInstall`
