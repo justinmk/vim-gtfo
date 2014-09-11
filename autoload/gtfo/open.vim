@@ -166,8 +166,8 @@ endf
 func! s:mac_open_iTerm(expanded_dir)
   let l:cmd = "
         \ tell application 'iTerm'                             \n
-        \   set term to (make new terminal)                    \n
-        \   tell term                                          \n
+        \   make new terminal                                  \n
+        \   tell the current terminal                          \n
         \     set sess to (launch session 'Default Session')   \n
         \     tell sess                                        \n
         \       write text '___'                               \n
