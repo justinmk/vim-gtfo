@@ -16,6 +16,10 @@ endf
 func! s:trimws(s)
   return substitute(a:s, '^\s*\(.\{-}\)\s*$', '\1', '')
 endf
+func! s:scrub(s)
+  "replace \\ with \ (greedy) #21
+  return substitute(a:s, '\\\\\+', '\', 'g')
+endf
 func! s:empty(s)
   return strlen(s:trimws(a:s)) == 0
 endf
@@ -67,7 +71,7 @@ func! gtfo#open#file(path) "{{{
     let l:shslash=1 | set noshellslash
   endif
 
-  let l:path = expand(a:path, 1)
+  let l:path = s:scrub(expand(a:path, 1))
   let l:dir = isdirectory(l:path) ? l:path : fnamemodify(l:path, ":h")
   let l:validfile = filereadable(l:path)
 
@@ -113,7 +117,7 @@ func! gtfo#open#file(path) "{{{
 endf "}}}
 
 func! gtfo#open#term(dir, cmd) "{{{
-  let l:dir = expand(a:dir, 1)
+  let l:dir = s:scrub(expand(a:dir, 1))
   if !isdirectory(l:dir) "this happens if a directory was deleted outside of vim.
     call s:beep('invalid/missing directory: '.l:dir)
     return
