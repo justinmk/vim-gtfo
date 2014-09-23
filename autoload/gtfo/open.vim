@@ -48,6 +48,19 @@ func! s:find_cygwin_bash()
   return executable($SystemDrive.'/cygwin/bin/bash') ? $SystemDrive.'/cygwin/bin/bash' : ''
 endf
 
+func! s:force_cmdexe()
+  if &shell !~? "cmd.exe"
+    let s:shell=&shell
+    set shell=$COMSPEC
+  endif
+endf
+
+func! s:restore_shell()
+  if exists("s:shell")
+    let &shell=s:shell
+  endif
+endf
+
 func! gtfo#open#file(path) "{{{
   if exists('+shellslash') && &shellslash
     "Windows: force expand() to return `\` paths so explorer.exe won't choke. #11
@@ -81,7 +94,9 @@ func! gtfo#open#file(path) "{{{
       call s:beep('failed to open file manager')
     endif
   elseif s:iswin
+    call s:force_cmdexe()
     silent exec '!start explorer '.(l:validfile ? '/select,"'.l:path.'"' : l:dir)
+    call s:restore_shell()
   elseif s:ismac
     if l:validfile
       silent exec "!open --reveal '".l:path."'"
@@ -111,13 +126,15 @@ func! gtfo#open#term(dir, cmd) "{{{
     silent exec '!cd ''' . l:dir . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
     redraw!
   elseif s:iswin
+    call s:force_cmdexe()
     if s:termpath =~? "bash" && executable(s:termpath)
-      " NOTE: Yes, these are nested quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
       silent exe '!start '.$COMSPEC.' /c "cd "'.l:dir.'" & "' . s:termpath . '" --login -i "'
     else "Assume it's a path with the required arguments (considered 'not executable' by Vim).
       if s:empty(s:termpath) | let s:termpath = 'cmd.exe /k'  | endif
+      " Yes, these are nested quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
       silent exe '!start '.s:termpath.' "cd "'.l:dir.'""'
     endif
+    call s:restore_shell()
   elseif s:ismac
     if (s:empty(s:termpath) && $TERM_PROGRAM ==? 'iTerm.app') || s:termpath ==? "iterm"
       silent call s:mac_open_iTerm(l:dir)
