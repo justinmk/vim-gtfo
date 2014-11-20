@@ -103,14 +103,12 @@ func! gtfo#open#file(path) "{{{
     endif
   elseif s:ismac
     if l:validfile
-      silent exec "!open --reveal '".l:path."'"
+      silent call system("open --reveal '".l:path."'")
     else
-      silent exec "!open '".l:dir."'"
+      silent call system("open '".l:dir."'")
     endif
-    if !s:isgui | redraw! | endif
   elseif executable('xdg-open')
-    silent exec "!xdg-open '".l:dir."' &"
-    if !s:isgui | redraw! | endif
+    silent call system("xdg-open '".l:dir."' &")
   else
     call s:beep('xdg-open is not in your $PATH. Try "sudo apt-get install xdg-utils"')
   endif
@@ -124,7 +122,7 @@ func! gtfo#open#term(dir, cmd) "{{{
   endif
 
   if s:istmux
-    silent exec '!tmux split-window -h \; send-keys "cd ''' . l:dir . ''' && clear" C-m'
+    silent call system('tmux split-window -h \; send-keys "cd ''' . l:dir . ''' && clear" C-m')
   elseif &shell !~? "cmd" && executable('cygstart') && executable('mintty')
     " https://code.google.com/p/mintty/wiki/Tips
     silent exec '!cd ''' . l:dir . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
@@ -144,8 +142,7 @@ func! gtfo#open#term(dir, cmd) "{{{
       silent call s:mac_open_iTerm(l:dir)
     else
       if s:empty(s:termpath) | let s:termpath = 'Terminal' | endif
-      silent exec "!open -a ".s:termpath." '".l:dir."'"
-      if !s:isgui | redraw! | endif
+      silent call system("open -a ".s:termpath." '".l:dir."'")
     endif
   elseif s:is_gui_available
     if !s:empty(s:termpath)
