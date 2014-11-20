@@ -122,7 +122,7 @@ func! gtfo#open#term(dir, cmd) "{{{
   endif
 
   if s:istmux
-    silent call system('tmux split-window -h \; send-keys "cd ''' . l:dir . ''' && clear" C-m')
+    silent call system('tmux split-window -h -c "' . l:dir . '"')
   elseif &shell !~? "cmd" && executable('cygstart') && executable('mintty')
     " https://code.google.com/p/mintty/wiki/Tips
     silent exec '!cd ''' . l:dir . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
