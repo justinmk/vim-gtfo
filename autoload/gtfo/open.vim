@@ -9,6 +9,7 @@ let s:isgui = has('gui_running') || &term ==? 'builtin_gui'
 let s:is_gui_available = s:ismac || s:iswin || (!empty($DISPLAY) && $TERM !=# 'linux')
 
 let s:termpath = ''
+let s:tmux_1_6 = 0
 
 func! s:beep(s)
   echohl ErrorMsg | echom 'gtfo: '.a:s | echohl None
@@ -38,6 +39,11 @@ func! s:init()
   endif
 
   let s:termpath = s:trimws(s:termpath)
+
+  if s:istmux
+    call system('tmux -V')
+    let s:tmux_1_6 = v:shell_error
+  endif
 endf
 
 func! s:find_cygwin_bash()
@@ -122,7 +128,11 @@ func! gtfo#open#term(dir, cmd) "{{{
   endif
 
   if s:istmux
-    silent call system('tmux split-window -h \; send-keys "cd ''' . l:dir . ''' && clear" C-m')
+    if s:tmux_1_6
+      silent call system('tmux split-window -h \; send-keys "cd ''' . l:dir . ''' && clear" C-m')
+    else
+      silent call system("tmux split-window -h -c '" . l:dir . "'")
+    endif
   elseif &shell !~? "cmd" && executable('cygstart') && executable('mintty')
     " https://code.google.com/p/mintty/wiki/Tips
     silent exec '!cd ''' . l:dir . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
