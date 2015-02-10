@@ -74,7 +74,7 @@ see if some other plugin is using that mapping.
     * To use termite:<br/>
       `let g:gtfo#terminals = { 'unix' : 'termite -d' }`
     * To use rxvt-unicode:<br/>
-      `let g:gtfo#terminals = { 'unix' : 'rxvt-unicode -cd' }`
+      `let g:gtfo#terminals = { 'unix' : 'urxvt -cd' }`
 
 ### Installation
 
