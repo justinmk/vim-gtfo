@@ -161,7 +161,7 @@ func! gtfo#open#term(dir, cmd) "{{{
     if !s:empty(s:termpath)
       silent call system(s:termpath." '".l:dir."'")
     elseif executable('gnome-terminal')
-      silent call system('gnome-terminal --window -e "$SHELL -c \"cd '''.l:dir.''' ; $SHELL\""')
+      silent call system('gnome-terminal --window -e "$SHELL -c \"cd '''.l:dir.''' ; exec $SHELL\""')
     else
       call s:beep('failed to open terminal')
     endif
