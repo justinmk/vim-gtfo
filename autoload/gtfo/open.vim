@@ -1,6 +1,4 @@
-let s:iswin = has('win32') || has('win64')
-"vim is running in 'vanilla' (non-msysgit) cygwin
-let s:iscygwin = has('win32unix') || has('win64unix')
+let s:iswin = has('win32') || has('win64') || has('win32unix') || has('win64unix')
 let s:ismac = has('gui_macvim') || has('mac')
 let s:istmux = !(empty($TMUX))
 "GUI Vim
@@ -51,8 +49,8 @@ endf
 
 func! s:find_cygwin_bash()
   "try 'Program Files', else fall back to 'Program Files (x86)'.
-  for programfiles_path in ['$ProgramW6432', '$ProgramFiles', '$ProgramFiles (x86)']
-    let path = expand(programfiles_path, 1).'/Git/bin/bash.exe'
+  for programfiles_path in [$ProgramW6432, $ProgramFiles, $ProgramFiles.' (x86)']
+    let path = substitute(programfiles_path, '\', '/', 'g').'/Git/bin/bash.exe'"
     if executable(path)
       return path
     endif
@@ -74,6 +72,13 @@ func! s:restore_shell()
   endif
 endf
 
+func! s:cygwin_cmd(path, dir, validfile)
+  let startcmd = executable('cygstart') ? 'cygstart' : 'start'
+  return a:validfile
+        \ ? startcmd.' explorer /select,$(cygpath -w '.shellescape(a:path, 1).')'
+        \ : startcmd.' explorer $(cygpath -w '.shellescape(a:dir, 1).')'
+endf
+
 func! gtfo#open#file(path) "{{{
   if exists('+shellslash') && &shellslash
     "Windows: force expand() to return `\` paths so explorer.exe won't choke. #11
@@ -93,17 +98,12 @@ func! gtfo#open#file(path) "{{{
     return
   endif
 
-  if s:iswin
+  if executable('cygpath')
+    silent call system(s:cygwin_cmd(l:path, l:dir, l:validfile))
+  elseif s:iswin
     call s:force_cmdexe()
     silent exec '!start explorer '.(l:validfile ? '/select,"'.s:bang_escape(l:path).'"' : l:dir)
     call s:restore_shell()
-  elseif executable('cygstart')
-    if l:validfile
-      silent exec "!cygstart explorer /select,`cygpath -w '".s:bang_escape(l:path)."'`"
-    else
-      silent exec "!cygstart explorer `cygpath -w '".s:bang_escape(l:dir)."'`"
-    endif
-    if !s:isgui | redraw! | endif
   elseif !s:is_gui_available && !executable('xdg-open')
     if s:istmux "fallback to 'got'
       call gtfo#open#term(l:dir, "")
@@ -140,6 +140,8 @@ func! gtfo#open#term(dir, cmd) "{{{
     " https://code.google.com/p/mintty/wiki/Tips
     silent exec '!cd ''' . s:bang_escape(l:dir) . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
     if !s:isgui | redraw! | endif
+  elseif s:iswin && &shell !~? "cmd" && executable('mintty')
+    silent call system('cd ''' . s:bang_escape(l:dir) . ''' && mintty &')
   elseif s:iswin
     call s:force_cmdexe()
     if s:termpath =~? "bash" && executable(s:termpath)
