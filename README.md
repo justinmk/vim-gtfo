@@ -8,7 +8,7 @@ This Vim plugin provides two simple features:
   at the directory of the file you are currently editing in Vim.
 
 gtfo.vim just works™ in [tmux](http://tmux.sourceforge.net/), mintty ([Cygwin](http://www.cygwin.com/), [Babun](https://github.com/babun/babun)), 
-[MSysGit](http://msysgit.github.io/) bash, Windows, OS X, and Unix.
+[Git-for-Windows](https://git-for-windows.github.io/), Windows, OS X, and Unix.
 
 ### Features
 
@@ -45,7 +45,7 @@ see if some other plugin is using that mapping.
 
 * If Vim is running in a tmux session, `got` opens a new tmux pane.
 
-**mintty ([Cygwin](http://www.cygwin.com/), [Babun](https://github.com/babun/babun), etc.)**
+**mintty ([Git-for-Windows](https://git-for-windows.github.io/), [Cygwin](http://www.cygwin.com/), [Babun](https://github.com/babun/babun), ...)**
 
 * If Vim is running in mintty, `got` opens a new mintty console.
 
@@ -53,7 +53,7 @@ see if some other plugin is using that mapping.
 
 * `gof` opens Windows Explorer.
 * `got` opens `g:gtfo#terminals['win']` *or* the first terminal that can be found:
-  * "Git bash" ([MSysGit](http://msysgit.github.io/))
+  * "Git bash" ([Git-for-Windows](https://git-for-windows.github.io/))
   * [Cygwin](http://www.cygwin.org) mintty
   * `%COMSPEC%` (cmd.exe)
 * To use powershell:<br/>
