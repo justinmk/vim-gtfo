@@ -19,9 +19,6 @@ func! s:scrub(s)
   "replace \\ with \ (greedy) #21
   return substitute(a:s, '\\\\\+', '\', 'g')
 endf
-func! s:bang_escape(s)
-  return escape(a:s, '#%')
-endf
 func! s:empty(s)
   return strlen(s:trimws(a:s)) == 0
 endf
@@ -75,8 +72,8 @@ endf
 func! s:cygwin_cmd(path, dir, validfile)
   let startcmd = executable('cygstart') ? 'cygstart' : 'start'
   return a:validfile
-        \ ? startcmd.' explorer /select,$(cygpath -w '.shellescape(a:path, 1).')'
-        \ : startcmd.' explorer $(cygpath -w '.shellescape(a:dir, 1).')'
+        \ ? startcmd.' explorer /select,$(cygpath -w '.shellescape(a:path).')'
+        \ : startcmd.' explorer $(cygpath -w '.shellescape(a:dir).')'
 endf
 
 func! gtfo#open#file(path) "{{{
@@ -102,7 +99,7 @@ func! gtfo#open#file(path) "{{{
     silent call system(s:cygwin_cmd(l:path, l:dir, l:validfile))
   elseif s:iswin
     call s:force_cmdexe()
-    silent exec '!start explorer '.(l:validfile ? '/select,"'.s:bang_escape(l:path).'"' : l:dir)
+    silent exec '!start explorer '.(l:validfile ? '/select,'.shellescape(l:path, 1) : shellescape(l:dir, 1))
     call s:restore_shell()
   elseif !s:is_gui_available && !executable('xdg-open')
     if s:istmux "fallback to 'got'
@@ -112,12 +109,12 @@ func! gtfo#open#file(path) "{{{
     endif
   elseif s:ismac
     if l:validfile
-      silent call system("open --reveal '".l:path."'")
+      silent call system('open --reveal '.shellescape(l:path))
     else
-      silent call system("open '".l:dir."'")
+      silent call system('open '.shellescape(l:dir))
     endif
   elseif executable('xdg-open')
-    silent call system("xdg-open '".l:dir."' &")
+    silent call system("xdg-open ".shellescape(l:dir)." &")
   else
     call s:beep('xdg-open is not in your $PATH. Try "sudo apt-get install xdg-utils"')
   endif
@@ -138,30 +135,32 @@ func! gtfo#open#term(dir, cmd) "{{{
     endif
   elseif &shell !~? "cmd" && executable('cygstart') && executable('mintty')
     " https://code.google.com/p/mintty/wiki/Tips
-    silent exec '!cd ''' . s:bang_escape(l:dir) . ''' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
+    silent exec '!cd '.shellescape(l:dir, 1).' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
     if !s:isgui | redraw! | endif
   elseif s:iswin && &shell !~? "cmd" && executable('mintty')
-    silent call system('cd ''' . s:bang_escape(l:dir) . ''' && mintty &')
+    silent call system('cd '.shellescape(l:dir).' && mintty &')
   elseif s:iswin
     call s:force_cmdexe()
     if s:termpath =~? "bash" && executable(s:termpath)
-      silent exe '!start '.$COMSPEC.' /c "cd "'.s:bang_escape(l:dir).'" & "' . s:termpath . '" --login -i "'
+      silent exe '!start '.$COMSPEC.' /c "cd '.shellescape(l:dir, 1).' & "'.s:termpath.'" --login -i "'
+    elseif s:termpath =~? "mintty" && executable(s:termpath)
+      silent exe '!start /min '.$COMSPEC.' /c "cd '.shellescape(l:dir, 1).' & "'.s:termpath.'" - " & exit'
     else "Assume it's a path with the required arguments (considered 'not executable' by Vim).
       if s:empty(s:termpath) | let s:termpath = 'cmd.exe /k'  | endif
-      " Yes, these are nested quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
-      silent exe '!start '.s:termpath.' "cd "'.s:bang_escape(l:dir).'""'
+      " This will nest quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
+      silent exe '!start '.s:termpath.' "cd '.shellescape(l:dir, 1).'"'
     endif
     call s:restore_shell()
   elseif s:ismac
     if (s:empty(s:termpath) && $TERM_PROGRAM ==? 'iTerm.app') || s:termpath ==? "iterm"
-      silent call system("open -a iTerm '".l:dir."'")
+      silent call system("open -a iTerm ".shellescape(l:dir))
     else
       if s:empty(s:termpath) | let s:termpath = 'Terminal' | endif
-      silent call system("open -a ".s:termpath." '".l:dir."'")
+      silent call system("open -a ".shellescape(s:termpath)." ".shellescape(l:dir))
     endif
   elseif s:is_gui_available
     if !s:empty(s:termpath)
-      silent call system(s:termpath." '".l:dir."'")
+      silent call system(shellescape(s:termpath)." ".shellescape(l:dir))
     elseif executable('gnome-terminal')
       silent call system('gnome-terminal --window -e "$SHELL -c \"cd '''.l:dir.''' ; exec $SHELL\""')
     else
