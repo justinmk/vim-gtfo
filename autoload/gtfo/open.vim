@@ -44,16 +44,23 @@ func! s:init()
   endif
 endf
 
-func! s:find_cygwin_bash()
+func! s:try_find_git_bin(binname)
   "try 'Program Files', else fall back to 'Program Files (x86)'.
   for programfiles_path in [$ProgramW6432, $ProgramFiles, $ProgramFiles.' (x86)']
-    let path = substitute(programfiles_path, '\', '/', 'g').'/Git/bin/bash.exe'"
+    let path = substitute(programfiles_path, '\', '/', 'g').'/'.a:binname
     if executable(path)
       return path
     endif
   endfor
-  "didn't find msysgit cygwin; try vanilla cygwin.
-  return executable($SystemDrive.'/cygwin/bin/bash') ? $SystemDrive.'/cygwin/bin/bash' : ''
+  return ''
+endf
+
+func! s:find_cygwin_bash()
+  let path = s:try_find_git_bin('Git/usr/bin/mintty.exe')
+  let path = '' !=# path ? path : s:try_find_git_bin('Git/bin/bash.exe')
+  "return path or fallback to vanilla cygwin.
+  return '' !=# path ? path : 
+        \ (executable($SystemDrive.'/cygwin/bin/bash') ? $SystemDrive.'/cygwin/bin/bash' : '')
 endf
 
 func! s:force_cmdexe()
