@@ -145,7 +145,7 @@ func! gtfo#open#term(dir, cmd) "{{{
     silent exec '!cd '.shellescape(l:dir, 1).' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
     if !s:isgui | redraw! | endif
   elseif s:iswin && &shell !~? "cmd" && executable('mintty')
-    silent call system('cd '.shellescape(l:dir).' && mintty &')
+    silent call system('cd '.shellescape(l:dir).' && mintty - &')
   elseif s:iswin
     call s:force_cmdexe()
     if s:termpath =~? "bash" && executable(s:termpath)
