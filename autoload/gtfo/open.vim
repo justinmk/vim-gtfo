@@ -102,7 +102,7 @@ func! gtfo#open#file(path) "{{{
     return
   endif
 
-  if executable('cygpath')
+  if has('win32unix')
     silent call system(s:cygwin_cmd(l:path, l:dir, l:validfile))
   elseif s:iswin
     call s:force_cmdexe()
