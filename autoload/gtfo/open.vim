@@ -64,12 +64,11 @@ func! s:find_cygwin_bash() abort
 endf
 
 func! s:force_cmdexe() abort
-  if &shell !~? "cmd"
+  if &shell !~? "cmd" || &shellslash
     let s:shell=&shell | let s:shslash=&shellslash | let s:shcmdflag=&shellcmdflag
     set shell=$COMSPEC noshellslash shellcmdflag=/c
   endif
 endf
-
 func! s:restore_shell() abort
   if exists("s:shell")
     let &shell=s:shell | let &shellslash=s:shslash | let &shellcmdflag=s:shcmdflag
