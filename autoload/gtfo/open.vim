@@ -175,7 +175,7 @@ func! gtfo#open#term(dir, cmd) abort "{{{
     endif
   elseif s:is_gui_available
     if !s:empty(s:termpath)
-      silent call system(shellescape(s:termpath)." ".shellescape(l:dir))
+      silent call system(s:termpath." ".shellescape(l:dir))
     elseif executable('gnome-terminal')
       silent call system('gnome-terminal --window -e "$SHELL -c \"cd '''.l:dir.''' ; exec $SHELL\""')
     else
