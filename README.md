@@ -24,8 +24,10 @@ Features
     a terminal program followed by the necessary flags (`-e`, `/k`, etc.) for
     executing a command on startup.
 
-    **Special case (OS X):** To use iTerm instead of Terminal.app, use the special value "iterm":<br/>
-    `let g:gtfo#terminals = { 'mac' : 'iterm' }`
+    **Special case (OS X):** To use iTerm instead of Terminal.app, use the special value "iterm":
+    ```
+    let g:gtfo#terminals = { 'mac': 'iterm' }
+    ```
 
 Platform Support
 ----------------
@@ -38,21 +40,33 @@ Platform Support
     * `got` opens `g:gtfo#terminals['win']` *or* the first terminal it can find:
       "Git bash" ([Git-for-Windows](https://git-for-windows.github.io/)),
       mintty, or cmd.exe.
-    * To use powershell:<br/>
-      `let g:gtfo#terminals = { 'win' : 'powershell -NoLogo -NoExit -Command' }`
+    * To use powershell:
+      ```
+      let g:gtfo#terminals = { 'win': 'powershell -NoLogo -NoExit -Command' }
+      ```
+    * To use ye olde cmd.exe:
+      ```
+      let g:gtfo#terminals = { 'win': 'cmd.exe /k' }
+      ```
 * **Mac OS X**
     * `gof` opens Finder.
     * `got` opens Terminal.app *unless* Vim is running in iTerm or `g:gtfo#terminals['mac']` is set.<br/>
-      To force iTerm:<br/>
-      `let g:gtfo#terminals = { 'mac' : 'iterm' }`
+      To force iTerm (special case, see [above][#settings]):
+      ```
+      let g:gtfo#terminals = { 'mac': 'iterm' }
+      ```
 * **Unix**
     * `gof` opens the file manager dictated by
       [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html).
     * `got` opens `$SHELL` inside `gnome-terminal` unless `g:gtfo#terminals['unix']` is set.
-        * To use termite:<br/>
-          `let g:gtfo#terminals = { 'unix' : 'termite -d' }`
-        * To use rxvt-unicode:<br/>
-          `let g:gtfo#terminals = { 'unix' : 'urxvt -cd' }`
+        * To use termite:
+          ```
+          let g:gtfo#terminals = { 'unix': 'termite -d' }
+          ```
+        * To use rxvt-unicode:
+          ```
+          let g:gtfo#terminals = { 'unix': 'urxvt -cd' }
+          ```
 
 Installation
 ------------
