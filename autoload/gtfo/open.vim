@@ -160,6 +160,8 @@ func! gtfo#open#term(dir, cmd) abort "{{{
       silent exe '!start '.$COMSPEC.' /c "'.cdcmd.' & "'.s:termpath.'" --login -i "'
     elseif s:termpath =~? "mintty" && executable(s:termpath)
       silent exe '!start /min '.$COMSPEC.' /c "'.cdcmd.' & "'.s:termpath.'" - " & exit'
+    elseif s:termpath =~? "powershell" && executable("powershell")
+      silent exe '!start '.s:termpath.' \"'.substitute(cdcmd, "&", ";", "g").'\"'
     else "Assume it is a path-plus-arguments.
       if s:empty(s:termpath) | let s:termpath = 'cmd.exe /k'  | endif
       " This will nest quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
