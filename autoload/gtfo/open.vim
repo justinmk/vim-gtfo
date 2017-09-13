@@ -154,14 +154,15 @@ func! gtfo#open#term(dir, cmd) abort "{{{
       let $VIMRUNTIME=''
     endif
     let drive = matchstr(l:dir, '^\s*\S:')
-    let cdcmd = (''==#drive?'':drive.' & ').'cd '.shellescape(l:dir, 1)
+    let cmdsep = (s:termpath =~? 'powershell') ? ' ; ' : ' & '
+    let cdcmd = ( '' ==# drive ? '' : drive.cmdsep ).'cd '.shellescape(l:dir, 1)
 
-    if s:termpath =~? "bash" && executable(s:termpath)
+    if s:termpath =~? 'bash' && executable('bash')
       silent exe '!start '.$COMSPEC.' /c "'.cdcmd.' & "'.s:termpath.'" --login -i "'
-    elseif s:termpath =~? "mintty" && executable(s:termpath)
+    elseif s:termpath =~? 'mintty' && executable('mintty')
       silent exe '!start /min '.$COMSPEC.' /c "'.cdcmd.' & "'.s:termpath.'" - " & exit'
-    elseif s:termpath =~? "powershell" && executable("powershell")
-      silent exe '!start '.s:termpath.' \"'.substitute(cdcmd, "&", ";", "g").'\"'
+    elseif s:termpath =~? 'powershell' && executable('powershell')
+      silent exe '!start '.s:termpath.' \"'.cdcmd.'\"'
     else "Assume it is a path-plus-arguments.
       if s:empty(s:termpath) | let s:termpath = 'cmd.exe /k'  | endif
       " This will nest quotes (""foo" "bar""), and yes, that is what cmd.exe expects.
