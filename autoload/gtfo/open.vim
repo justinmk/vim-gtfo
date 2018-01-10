@@ -66,7 +66,8 @@ endf
 func! s:force_cmdexe() abort
   if &shell !~? "cmd" || &shellslash
     let s:shell=&shell | let s:shslash=&shellslash | let s:shcmdflag=&shellcmdflag
-    set shell=$COMSPEC noshellslash shellcmdflag=/c
+    let &shell=$COMSPEC
+    set noshellslash shellcmdflag=/c
   endif
 endf
 func! s:restore_shell() abort
