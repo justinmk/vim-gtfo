@@ -11,12 +11,12 @@ Features
 
 ### Mappings
 
-* `gof`: **Go** to the current file's directory in the **File manager** 
-    * `goF` (uppercase `F`) opens the current *working directory* (`:pwd`)
-* `got`: **Go** to the current file's directory in the **Terminal**
-    * `goT` (uppercase `T`) opens the current *working directory* (`:pwd`)
+* `gof`: **Go** to the directory of the current file in the **File manager** 
+    * `goF`: Go to the *working directory* (`:pwd`)
+* `got`: **Go** to the directory of the current file in the **Terminal**
+    * `goT`: Go to the *working directory* (`:pwd`)
 
-### Settings
+### Options
 
 * `g:gtfo#terminals` Optional dictionary with one or more of the following keys: `win`, `mac`, `unix`
 
@@ -33,13 +33,12 @@ Platform Support
 ----------------
 
 * **tmux:** `got` opens a new tmux pane.
-* **mintty ([Git-for-Windows](https://git-for-windows.github.io/),
+* **mintty ([Git-for-Windows](https://gitforwindows.org/),
 [Cygwin](http://www.cygwin.com/), etc.):** `got` opens a new mintty console.
 * **Windows**
     * `gof` opens Windows Explorer.
     * `got` opens `g:gtfo#terminals['win']` *or* the first terminal it can find:
-      "Git bash" ([Git-for-Windows](https://git-for-windows.github.io/)),
-      mintty, or cmd.exe.
+      "Git bash", mintty, or cmd.exe.
     * To use powershell:
       ```
       let g:gtfo#terminals = { 'win': 'powershell -NoLogo -NoExit -Command' }
