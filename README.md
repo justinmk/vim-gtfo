@@ -56,7 +56,7 @@ Platform Support
       ```
 * **Unix**
     * `gof` opens the file manager dictated by
-      [`xdg-open`](http://portland.freedesktop.org/xdg-utils-1.0/xdg-open.html).
+      [`xdg-open`](https://portland.freedesktop.org/doc/xdg-open.html).
     * `got` opens `$SHELL` inside `gnome-terminal` unless `g:gtfo#terminals['unix']` is set.
         * To use termite:
           ```
