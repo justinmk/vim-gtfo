@@ -143,7 +143,8 @@ func! gtfo#open#term(dir, cmd) abort "{{{
       silent call system("tmux split-window -h -c '" . l:dir . "'")
     endif
   elseif s:iswezterm
-    silent call system("wezterm cli split-pane --horizontal=false --cwd='" . l:dir . "'")
+    let l:cwd = s:iswin ? shellescape(l:dir, 1) : "'" . l:dir .  "'"
+    silent call system("wezterm cli split-pane --horizontal=false --cwd=" . l:cwd)
   elseif &shell !~? "cmd" && executable('cygstart') && executable('mintty')
     " https://github.com/mintty/mintty/wiki/Tips
     silent exec '!cd '.shellescape(l:dir, 1).' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
