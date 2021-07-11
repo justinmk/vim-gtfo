@@ -1,6 +1,7 @@
 let s:iswin = has('win32') || has('win64') || has('win32unix') || has('win64unix')
 let s:ismac = has('gui_macvim') || has('mac')
 let s:istmux = !(empty($TMUX))
+let s:iswezterm = $WEZTERM_PANE !=? ''
 "GUI Vim
 let s:isgui = has('gui_running') || &term ==? 'builtin_gui'
 "non-GUI Vim running within a GUI environment
@@ -141,6 +142,9 @@ func! gtfo#open#term(dir, cmd) abort "{{{
     else
       silent call system("tmux split-window -h -c '" . l:dir . "'")
     endif
+  elseif s:iswezterm
+    let l:cwd = s:iswin ? shellescape(l:dir, 1) : "'" . l:dir .  "'"
+    silent call system("wezterm cli split-pane --horizontal=false --cwd=" . l:cwd)
   elseif &shell !~? "cmd" && executable('cygstart') && executable('mintty')
     " https://github.com/mintty/mintty/wiki/Tips
     silent exec '!cd '.shellescape(l:dir, 1).' && cygstart mintty /bin/env CHERE_INVOKING=1 /bin/bash'
