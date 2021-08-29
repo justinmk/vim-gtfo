@@ -1,49 +1,34 @@
-vim-gtfo.txt
+gtfo.txt
 
-================================================================================
-CONTENTS                                                       *vim-gtfo-contents*
-
-1. gtfo.vim :point_right:........................|vim-gtfo-gtfo.vim_:point_right:|
-    1.1. Features..............................................|vim-gtfo-features|
-        1.1.1. Mappings........................................|vim-gtfo-mappings|
-        1.1.2. Options..........................................|vim-gtfo-options|
-    1.2. Platform Support..............................|vim-gtfo-platform_support|
-    1.3. Installation......................................|vim-gtfo-installation|
-    1.4. FAQ........................................................|vim-gtfo-faq|
-    1.5. Credits................................................|vim-gtfo-credits|
-    1.6. License................................................|vim-gtfo-license|
-
-================================================================================
-GTFO.VIM :POINT_RIGHT:                           *vim-gtfo-gtfo.vim_:point_right:*
-
-Opens the
-file manager (http://en.wikipedia.org/wiki/File_manager#Examples)
+Opens the file manager (http://en.wikipedia.org/wiki/File_manager#Examples)
 or terminal (http://en.wikipedia.org/wiki/Terminal_emulator) at the
 directory of the current file in Vim.
 
 --------------------------------------------------------------------------------
-FEATURES                                                       *vim-gtfo-features*
+FEATURES                                                       *gtfo-features*
 
-MAPPINGS                                                       *vim-gtfo-mappings*
+MAPPINGS                                                       *gtfo-mappings*
 
 *   `gof`: Go to the directory of the current file in the File manager
     *   `goF`: Go to the working directory (`:pwd`)
 *   `got`: Go to the directory of the current file in the Terminal
     *   `goT`: Go to the working directory (`:pwd`)
 
-OPTIONS                                                         *vim-gtfo-options*
+OPTIONS                                                         *gtfo-options*
 
-*   `g:gtfo#terminals` Optional dictionary with one or more of the following keys: `win`, `mac`, `unix`
-    The `g:gtfo#terminals.<key>` value is the name (or absolute path) of
+*   `g:gtfo#terminals` Optional dictionary with one or more of the following
+    keys: `win`, `mac`, `unix`
+*   The `g:gtfo#terminals.<key>` value is the name (or absolute path) of
     a terminal program followed by the necessary flags (`-e`, `/k`, etc.) for
     executing a command on startup.
-    Special case (OS X): To use iTerm instead of Terminal.app, use the special value "iterm":
+    Special case (OS X): To use iTerm instead of Terminal.app, use the special
+    value "iterm":
 >
         let g:gtfo#terminals = { 'mac': 'iterm' }
 <
 
 --------------------------------------------------------------------------------
-PLATFORM SUPPORT                                       *vim-gtfo-platform_support*
+PLATFORM SUPPORT                                       *gtfo-platform_support*
 
 *   tmux: `got` opens a new tmux pane.
 *   mintty (Git-for-Windows (https://gitforwindows.org/),
@@ -53,51 +38,62 @@ PLATFORM SUPPORT                                       *vim-gtfo-platform_suppor
     *   `got` opens `g:gtfo#terminals['win']` or the first terminal it can find:
         "Git bash", mintty, or cmd.exe.
     *   To use powershell:
+    >
+      let g:gtfo#terminals = { 'win': 'powershell -NoLogo -NoExit -Command' }
+    <
     *   To use ye olde cmd.exe:
+    >
+      let g:gtfo#terminals = { 'win': 'cmd.exe /k' }
+    <
 *   Mac OS X
     *   `gof` opens Finder.
-    *   `got` opens Terminal.app unless Vim is running in iTerm or `g:gtfo#terminals['mac']` is set.
+    *   `got` opens Terminal.app unless Vim is running in iTerm or
+        `g:gtfo#terminals['mac']` is set.
         To force iTerm (special case, see [above][#settings]):
+        <
+          let g:gtfo#terminals = { 'mac': 'iterm' }
+        >
 *   Unix
     *   `gof` opens the file manager dictated by
         `xdg-open` (https://portland.freedesktop.org/doc/xdg-open.html).
-    *   `got` opens `$SHELL` inside `gnome-terminal` unless `g:gtfo#terminals['unix']` is set.
+    *   `got` opens `$SHELL` inside `gnome-terminal` unless
+        `g:gtfo#terminals['unix']` is set.
         *   To use termite:
+        >
+          let g:gtfo#terminals = { 'unix': 'termite -d' }
+        <
         *   To use rxvt-unicode:
+        >
+          let g:gtfo#terminals = { 'unix': 'urxvt -cd' }
+        <
+
 
 --------------------------------------------------------------------------------
-INSTALLATION                                               *vim-gtfo-installation*
-
-*   Pathogen (https://github.com/tpope/vim-pathogen)
-    * 
-*   vim-plug (https://github.com/junegunn/vim-plug)
-    1.  Add  to .vimrc
-    2.  Run `:PlugInstall`
-
---------------------------------------------------------------------------------
-FAQ                                                                 *vim-gtfo-faq*
+FAQ                                                                 *gtfo-faq*
 >
     `got` (or `gof`) doesn't work
 <
 
-Try  to see if some other plugin is using that mapping.
+Try `:verbose map gof` to see if some other plugin is using that mapping.
+
 >
     On Linux without a gui, `gof` does nothing, or launches w3m
 <
 
 `xdg-open` defaults to w3m if no GUI is available (eg, in ssh or tty console).
-To change the default: 
+To change the default: `xdg-mime default application/x-directory foo`
 
 --------------------------------------------------------------------------------
-CREDITS                                                         *vim-gtfo-credits*
+CREDITS                                                         *gtfo-credits*
 
-*   Sangmin Ryu, open-terminal-filemanager (http://www.vim.org/scripts/script.php?script_id=2896)
+*   Sangmin Ryu, open-terminal-filemanager
+    (http://www.vim.org/scripts/script.php?script_id=2896)
 *   @tpope, for impeccable Vim plugin reference implementations
 *   EasyShell (http://marketplace.eclipse.org/node/974#.Ui1kc2R273E)
 *   junegunn (https://github.com/junegunn) for some readme copy
 
 --------------------------------------------------------------------------------
-LICENSE                                                         *vim-gtfo-license*
+LICENSE                                                         *gtfo-license*
 
 Copyright © Justin M. Keyes. MIT license.
 
