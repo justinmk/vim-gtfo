@@ -2,6 +2,7 @@ let s:iswin = has('win32') || has('win64') || has('win32unix') || has('win64unix
 let s:ismac = has('gui_macvim') || has('mac')
 let s:istmux = !(empty($TMUX))
 let s:iswezterm = $WEZTERM_PANE !=? ''
+let s:iskitty = $KITTY_LISTEN_ON !=? ''
 "GUI Vim
 let s:isgui = has('gui_running') || &term ==? 'builtin_gui'
 "non-GUI Vim running within a GUI environment
@@ -142,6 +143,9 @@ func! gtfo#open#term(dir, cmd) abort "{{{
     else
       silent call system("tmux split-window -h -c '" . l:dir . "'")
     endif
+  elseif s:iskitty
+    let l:cwd = s:iswin ? shellescape(l:dir, 1) : "'" . l:dir .  "'"
+    silent call system("kitty @ --to=$KITTY_LISTEN_ON new-window --cwd=" . l:cwd)
   elseif s:iswezterm
     let l:cwd = s:iswin ? shellescape(l:dir, 1) : "'" . l:dir .  "'"
     silent call system("wezterm cli split-pane --horizontal=false --cwd=" . l:cwd)
