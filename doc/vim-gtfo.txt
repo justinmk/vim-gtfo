@@ -31,6 +31,10 @@ OPTIONS                                                         *gtfo-options*
 PLATFORM SUPPORT                                       *gtfo-platform_support*
 
 *   tmux: `got` opens a new tmux pane.
+*   wezterm: `got` opens a new wezterm pane.
+*   kitty: `got` opens a new kitty pane if `allow_remote_control` and `listen_on`
+           are set to appropriate values in your kitty config.
+           See https://sw.kovidgoyal.net/kitty/remote-control
 *   mintty (Git-for-Windows (https://gitforwindows.org/),
     Cygwin (http://www.cygwin.com/), etc.): `got` opens a new mintty console.
 *   Windows
