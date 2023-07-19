@@ -39,6 +39,10 @@ Platform Support
     * `gof` opens Windows Explorer.
     * `got` opens `g:gtfo#terminals['win']` *or* the first terminal it can find:
       "Git bash", mintty, or cmd.exe.
+    * To use pwsh:
+      ```
+      let g:gtfo#terminals = { 'win': 'pwsh' }
+      ```
     * To use powershell:
       ```
       let g:gtfo#terminals = { 'win': 'powershell -NoLogo -NoExit -Command' }
